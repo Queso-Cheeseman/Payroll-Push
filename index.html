@@ -356,29 +356,35 @@
       transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .line-dot {
-      position: absolute;
-      top: 50%;
-      left: 0%;
-      transform: translate(-50%, -50%);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #f9fafb, #e0f2fe);
-      box-shadow:
-        0 0 10px rgba(56, 189, 248, 0.8),
-        0 0 18px rgba(45, 212, 191, 0.9);
-      border: 1px solid rgba(15,23,42,0.15);
-      transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+/* Progress marker: snowflake instead of white circle */
+.line-dot {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  /* no more circle styling */
+  width: auto;
+  height: auto;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
 
-    .line-dot::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-radius: inherit;
-      border: 1px solid rgba(148,163,184,0.8);
-    }
+/* remove the old inner circle */
+.line-dot::after {
+  content: none;
+}
+
+/* snowflake icon as the marker */
+.line-dot::before {
+  content: "❄";
+  font-size: 20px;
+  line-height: 1;
+  color: #0f172a; /* or white if you prefer */
+  text-shadow:
+    0 0 6px rgba(255,255,255,0.9),
+    0 0 10px rgba(56,189,248,0.8);
+}
 
     .line-labels {
       display: flex;
