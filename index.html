@@ -13,19 +13,6 @@
       --goal-teal: #6ef5c2;
     }
 
-@media (max-width: 800px) {
-  #snowman-decoration {
-    font-size: 40vh;
-    right: 1vw;
-  }
-}
-
-@media (max-width: 480px) {
-  #snowman-decoration {
-    display: none; /* hide on very small screens */
-  }
-}
-
     * {
       box-sizing: border-box;
     }
@@ -80,7 +67,7 @@
 
     .tracker-card {
       position: relative;
-      padding: 32px 40px 22px 40px;
+      padding: 32px 40px;
       border-radius: 24px;
       background: linear-gradient(
         145deg,
@@ -248,20 +235,13 @@
       opacity: 0.8;
     }
 
-    .last-updated {
-      margin-top: 14px;
-      font-size: 11px;
-      opacity: 0.75;
-      text-align: right;
-    }
-
     .hidden-inputs {
       display: none;
     }
 
     @media (max-width: 540px) {
       .tracker-card {
-        padding: 24px 18px 18px 18px;
+        padding: 24px 18px;
       }
       .current-total {
         font-size: 44px;
@@ -273,9 +253,6 @@
       .percent-block {
         text-align: left;
       }
-      .last-updated {
-        text-align: left;
-      }
     }
   </style>
 </head>
@@ -284,21 +261,20 @@
   <!-- Dynamic snow layer -->
   <div id="snow-layer"></div>
 
-  <!-- Santa sleigh that occasionally flies across the screen -->
-
   <div class="tracker-card">
     <div class="tracker-header">
       <div class="title-block">
         <h1>
           <span class="emoji">🎄</span>
-          Payroll Push Tracker
+          Winter Goal Tracker
         </h1>
         <div class="subtitle">
           Cozy progress toward your year-end customer goal.
-          <br /
-        </div>
-           <span style="font-size: 11px; opacity: 0.8;">
+          <br />
+          <span style="font-size: 11px; opacity: 0.8;">
+            Keep 'em comin!
           </span>
+        </div>
       </div>
       <div class="badge">Snow Day Progress</div>
     </div>
@@ -328,8 +304,6 @@
       </div>
     </div>
 
-    <div class="last-updated" id="lastUpdated">Last updated: —</div>
-
     <!-- Hidden inputs so you can still update programmatically if needed -->
     <div class="hidden-inputs">
       <input type="number" id="current" value="627">
@@ -347,71 +321,40 @@
     const lineDot        = document.getElementById("lineDot");
     const chipText       = document.getElementById("chipText");
     const snowLayer      = document.getElementById("snow-layer");
-    const lastUpdatedEl  = document.getElementById("lastUpdated");
-    const santaSleigh    = document.getElementById("santa-sleigh");
 
     let snowIntensity = 0; // 0–1 based on progress
-    let lastUpdatedMs = null;
 
     const STORAGE_KEYS = {
       current: "winterGoalCurrent",
-      goal: "winterGoalGoal",
-      lastUpdated: "winterGoalLastUpdated"
+      goal: "winterGoalGoal"
     };
 
     function loadFromStorage() {
       try {
         const savedCurrent = localStorage.getItem(STORAGE_KEYS.current);
         const savedGoal    = localStorage.getItem(STORAGE_KEYS.goal);
-        const savedLast    = localStorage.getItem(STORAGE_KEYS.lastUpdated);
 
-        if (savedCurrent !== null && !isNaN(parseFloat(savedCurrent))) {
+        if (savedCurrent !== null) {
           currentInput.value = parseFloat(savedCurrent);
         }
-        if (savedGoal !== null && !isNaN(parseFloat(savedGoal))) {
+        if (savedGoal !== null) {
           goalInput.value = parseFloat(savedGoal);
         }
-        if (savedLast !== null && !isNaN(parseInt(savedLast, 10))) {
-          lastUpdatedMs = parseInt(savedLast, 10);
-        }
       } catch (e) {
-        // If storage is blocked, ignore and fall back to defaults
+        // If storage is blocked, just ignore.
       }
     }
 
-    function saveToStorage(current, goal, lastUpdatedMs) {
+    function saveToStorage(current, goal) {
       try {
         localStorage.setItem(STORAGE_KEYS.current, String(current));
         localStorage.setItem(STORAGE_KEYS.goal, String(goal));
-        if (lastUpdatedMs != null) {
-          localStorage.setItem(STORAGE_KEYS.lastUpdated, String(lastUpdatedMs));
-        }
       } catch (e) {
-        // Storage may be unavailable (private mode, etc.) – ignore
+        // Ignore if storage is unavailable
       }
     }
 
-    function updateLastUpdatedDisplay() {
-      if (!lastUpdatedEl) return;
-
-      if (!lastUpdatedMs) {
-        lastUpdatedEl.textContent = "Last updated: —";
-        return;
-      }
-
-      const d = new Date(lastUpdatedMs);
-      const formatted = d.toLocaleString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit"
-      });
-
-      lastUpdatedEl.textContent = "Last updated: " + formatted;
-    }
-
-    function recalcAndRender(skipTimestampUpdate = false) {
+    function updateLine() {
       const current = Math.max(parseFloat(currentInput.value) || 0, 0);
       const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
 
@@ -433,7 +376,7 @@
       } else if (percent < 50) {
         chipText.textContent = "Building the base of the snowman!";
       } else if (percent < 75) {
-        chipText.textContent = "Almost three-quarters of the way!";
+        chipText.textContent = "LFG!";
       } else if (percent < 100) {
         chipText.textContent = "So close—hot cocoa is ready!";
       } else {
@@ -443,16 +386,11 @@
       // Update snow intensity (0–1)
       snowIntensity = ratio;
 
-      // Timestamp & storage
-      if (!skipTimestampUpdate) {
-        lastUpdatedMs = Date.now();
-      }
-
-      updateLastUpdatedDisplay();
-      saveToStorage(current, goal, lastUpdatedMs);
+      // Save values
+      saveToStorage(current, goal);
     }
 
-    // Public function still usable from outside / programmatically
+    // Public function (still usable from outside / programmatically)
     window.updateGoalProgress = function(currentValue, goalValue) {
       if (typeof currentValue !== "undefined") {
         currentInput.value = currentValue;
@@ -460,7 +398,7 @@
       if (typeof goalValue !== "undefined") {
         goalInput.value = goalValue;
       }
-      recalcAndRender(false);
+      updateLine();
     };
 
     // Keyboard controls for adjusting total customers
@@ -507,7 +445,7 @@
       const next = Math.max(current + delta, 0);
 
       currentInput.value = next;
-      recalcAndRender(false);
+      updateLine();
     });
 
     // Dynamic snow: more progress = more snow, faster & slightly larger
@@ -515,6 +453,7 @@
       const flake = document.createElement("div");
       flake.className = "snowflake";
 
+      // Choose a random snow character
       const chars = ["❄️", "❅", "❆"];
       flake.textContent = chars[Math.floor(Math.random() * chars.length)];
 
@@ -537,10 +476,12 @@
 
       snowLayer.appendChild(flake);
 
+      // Clean up after it falls
       setTimeout(() => {
         flake.remove();
       }, (duration + delayJitter + 1) * 1000);
 
+      // Schedule next flake based on intensity
       const maxInterval = 900; // ms
       const minInterval = 120; // ms
       const nextDelay = maxInterval - intensity * (maxInterval - minInterval);
@@ -548,17 +489,10 @@
       setTimeout(spawnSnowflake, nextDelay);
     }
 
-
     // Initialize from storage, then start everything
     loadFromStorage();
-    // First render: don't treat as "updated now" – respect stored timestamp
-    recalcAndRender(true);
+    updateLine();
     spawnSnowflake();
-
-    // Start Santa schedule and one early flight for fun
-    setTimeout(triggerSleighFlight, 2000);
-    scheduleSleighFlight();
   </script>
 </body>
 </html>
-
