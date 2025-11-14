@@ -885,25 +885,27 @@
   </script>
 <button id="autoPlayButton" style="display:none"></button>
 
-<audio id="christmasMusic" loop>
+<audio id="christmasMusic" autoplay loop muted>
   <source src="https://cdn.musopen.org/media/audio/2017/10/04/tchaikovsky-nutcracker-dance-of-the-sugar-plum-fairy.mp3" type="audio/mpeg">
 </audio>
 
 <script>
   const music = document.getElementById("christmasMusic");
-  const btn = document.getElementById("autoPlayButton");
 
-  // Clicking the button triggers audio legally
-  btn.addEventListener("click", () => {
-    music.volume = 0.55;
-    music.play().catch(e => console.log("Autoplay blocked:", e));
-  });
-
-  // Try to click it automatically as soon as page loads
+  // Fade in after autoplay works
   window.addEventListener("DOMContentLoaded", () => {
-    btn.click();
+    music.muted = false;
+    let v = 0;
+
+    const fade = setInterval(() => {
+      if (v >= 0.55) {
+        clearInterval(fade);
+      } else {
+        v += 0.02;
+        music.volume = v;
+      }
+    }, 120);
   });
 </script>
-
 </body>
 </html>
