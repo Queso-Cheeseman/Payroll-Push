@@ -27,9 +27,9 @@
       align-items: center;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #ffffff;
-      background:
-        radial-gradient(circle at top, #ffffff 0, #ffffff 5%, rgba(255,255,255,0.08) 30%, transparent 60%),
-        linear-gradient(180deg, #0b1120, #111827 45%, #020617 100%);
+      /* New: single, subtle night gradient */
+      background: radial-gradient(circle at 20% -10%, #1f2937 0, transparent 55%),
+              linear-gradient(180deg, #020617 0%, #02091a 45%, #020617 100%);
       overflow: hidden;
     }
 
@@ -335,15 +335,15 @@
 
     .percent-chip span.icon {
       font-size: 16px;
-      animation: iconWiggle 2.8s ease-in-out infinite;
+      animation: iconWiggle 1.6s ease-in-out infinite;
     }
 
     @keyframes iconWiggle {
       0%, 100% { transform: rotate(0deg); }
-      30% { transform: rotate(-10deg); }
+      20% { transform: rotate(-10deg); }
       40% { transform: rotate(6deg); }
-      50% { transform: rotate(-4deg); }
-      60% { transform: rotate(2deg); }
+      60% { transform: rotate(-4deg); }
+      80% { transform: rotate(2deg); }
     }
 
     /* Line graph */
