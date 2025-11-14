@@ -714,45 +714,50 @@
         localStorage.setItem(STORAGE_KEYS.goal, String(goal));
       } catch (e) {}
     }
-const base = 614;  // your true starting point
-    function updateLine() {
-      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
-      const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
+// Baseline for the progress bar
+const BASE = 614;  // starting point
 
-       const base = 614;  // starting point
-    const currentVal = current;
-    const goalVal = goal;
-    
-    const ratio = Math.min(
-      (currentVal - base) / (goalVal - base),
-      1
-    );
-      const percent = Math.round(ratio * 100);
+function updateLine() {
+  const current = Math.max(parseFloat(currentInput.value) || 0, 0);
+  const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
 
-      totalDisplay.textContent   = current.toLocaleString();
-    const percent = Math.round(ratio * 100);
-percentDisplay.textContent = percent + "%";
-      goalLabel.textContent      = goal.toLocaleString();
+  // Clamp so we don't go below the base
+  const currentVal = Math.max(current, BASE);
+  const goalVal    = Math.max(goal, BASE + 1);
 
-      const widthPercent = ratio * 100;
-      lineFill.style.width = widthPercent + "%";
-      lineDot.style.left   = widthPercent + "%";
+  // Progress is from BASE → goal
+  const ratio = Math.min(
+    (currentVal - BASE) / (goalVal - BASE),
+    1
+  );
 
-      if (percent < 25) {
-        chipText.textContent = "Just getting started—fresh snow!";
-      } else if (percent < 50) {
-        chipText.textContent = "Building the base of the snowman!";
-      } else if (percent < 75) {
-        chipText.textContent = "LFG!";
-      } else if (percent < 100) {
-        chipText.textContent = "So close—hot cocoa is ready!";
-      } else {
-        chipText.textContent = "Goal reached! Time for a snow day 🎉";
-      }
+  const percent = Math.round(ratio * 100);
 
-      snowIntensity = ratio;
-      saveToStorage(current, goal);
-    }
+  // Update UI
+  totalDisplay.textContent   = current.toLocaleString();
+  percentDisplay.textContent = percent + "%";
+  goalLabel.textContent      = goal.toLocaleString();
+
+  const widthPercent = ratio * 100;
+  lineFill.style.width = widthPercent + "%";
+  lineDot.style.left   = widthPercent + "%";
+
+  if (percent < 25) {
+    chipText.textContent = "Just getting started—fresh snow!";
+  } else if (percent < 50) {
+    chipText.textContent = "Building the base of the snowman!";
+  } else if (percent < 75) {
+    chipText.textContent = "LFG!";
+  } else if (percent < 100) {
+    chipText.textContent = "So close—hot cocoa is ready!";
+  } else {
+    chipText.textContent = "Goal reached! Time for a snow day 🎉";
+  }
+
+  snowIntensity = ratio;
+  saveToStorage(current, goal);
+}
+
 
     window.updateGoalProgress = function(currentValue, goalValue) {
       if (typeof currentValue !== "undefined") currentInput.value = currentValue;
