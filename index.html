@@ -155,45 +155,52 @@
     }
 
     /* Main card */
-    .tracker-card {
-      position: relative;
-      padding: 32px 40px;
-      border-radius: 24px;
-      background: linear-gradient(
-        145deg,
-        rgba(15,23,42,0.92),
-        rgba(30,64,175,0.75)
-      );
-      box-shadow:
-        0 24px 60px rgba(0,0,0,0.7),
-        0 0 0 1px rgba(255,255,255,0.08);
-      backdrop-filter: blur(20px);
-      width: min(900px, 90vw);
-      z-index: 2;
-      animation: cardFloat 16s ease-in-out infinite alternate;
-      overflow: hidden;
-    }
+  .tracker-card {
+  position: relative;
+  padding: 32px 40px;
+  border-radius: 24px;
 
-    .tracker-card::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      border-radius: inherit;
-      pointer-events: none;
-      background:
-        conic-gradient(
-          from 0deg,
-          rgba(191, 219, 254, 0.9),
-          rgba(125, 211, 252, 0.9),
-          rgba(56, 189, 248, 0.9),
-          rgba(103, 232, 249, 0.9),
-          rgba(191, 219, 254, 0.9)
-        );
-      mix-blend-mode: screen;
-      opacity: 0.12;
-      filter: blur(12px);
-      animation: lightsGlow 5s ease-in-out infinite alternate;
-    }
+  /* NEW: very gentle, almost-solid gradient to avoid visible bands */
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.98) 0%,
+    rgba(15, 23, 42, 0.97) 50%,
+    rgba(15, 23, 42, 0.96) 100%
+  );
+
+  box-shadow:
+    0 24px 60px rgba(0,0,0,0.7),
+    0 0 0 1px rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  width: min(900px, 90vw);
+  z-index: 2;
+  animation: cardFloat 16s ease-in-out infinite alternate;
+  overflow: hidden;
+}
+
+  .tracker-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(191, 219, 254, 0.7),
+      rgba(125, 211, 252, 0.7),
+      rgba(56, 189, 248, 0.7),
+      rgba(103, 232, 249, 0.7),
+      rgba(191, 219, 254, 0.7)
+    );
+  mix-blend-mode: screen;
+
+  /* NEW: softer + more blurred so it reads as a gentle glow, not a band */
+  opacity: 0.07;
+  filter: blur(16px);
+  animation: lightsGlow 5s ease-in-out infinite alternate;
+}
+
 
     .tracker-card::after {
       content: "";
