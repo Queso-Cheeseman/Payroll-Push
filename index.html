@@ -883,6 +883,25 @@
     spawnSnowflake();
     initStars(80);
   </script>
+<audio id="christmasMusic" loop>
+  <source src="https://cdn.musopen.org/media/audio/2017/10/04/tchaikovsky-nutcracker-dance-of-the-sugar-plum-fairy.mp3" type="audio/mpeg">
+</audio>
 
+<script>
+  const music = document.getElementById("christmasMusic");
+  let musicStarted = false;
+
+  function startMusic() {
+    if (!musicStarted) {
+      musicStarted = true;
+      music.volume = 0.55;  // gentle volume for ambiance
+      music.play().catch(()=>{});
+    }
+  }
+
+  // First interaction starts music
+  window.addEventListener("click", startMusic, { once: true });
+  window.addEventListener("keydown", startMusic, { once: true });
+</script>
 </body>
 </html>
