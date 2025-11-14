@@ -135,32 +135,33 @@
     }
 
     /* MAIN TRACKER CARD – frosted + 3D */
-    .tracker-card {
-      position: relative;
-      padding: 32px 40px;
-      border-radius: 24px;
+.tracker-card {
+  position: relative;
+  padding: 32px 40px;
+  border-radius: 24px;
 
-      /* frosted glass – light, but solid enough for contrast */
-      background: linear-gradient(
-        145deg,
-        rgba(255, 255, 255, 0.96),
-        rgba(248, 250, 252, 0.95)
-      );
-      backdrop-filter: blur(18px) saturate(140%);
-      -webkit-backdrop-filter: blur(18px) saturate(140%);
+  /* Softer, more translucent glass */
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(248, 250, 252, 0.68)
+  );
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 
-      border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.55);
 
-      /* 3D: strong drop shadow + subtle lift */
-      box-shadow:
-        0 28px 60px rgba(0, 0, 0, 0.7),
-        0 1px 0 rgba(255,255,255,0.9);
+  box-shadow:
+    0 26px 60px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.85);
 
-      width: min(900px, 90vw);
-      z-index: 5;
-      animation: cardFloat 16s ease-in-out infinite alternate;
-      overflow: hidden;
-    }
+  width: min(900px, 90vw);
+  z-index: 2;
+}
+.tracker-card::before {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent 65%);
+  opacity: 0.6;
+}
 
     /* subtle top highlight to enhance 3D, but STATIC (no white animation) */
     .tracker-card::after {
