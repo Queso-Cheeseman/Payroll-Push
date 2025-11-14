@@ -889,22 +889,63 @@
 
 <audio id="christmasMusic" loop>
   <source src="https://cdn.musopen.org/media/audio/2017/10/04/tchaikovsky-nutcracker-dance-of-the-sugar-plum-fairy.mp3" type="audio/mpeg">
+<!-- Classical Christmas music: Dance of the Sugar Plum Fairy -->
+<audio id="christmasMusic" autoplay loop playsinline>
+  <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Dance%20of%20the%20Sugar%20Plum%20Fairy.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
 </audio>
 
 <script>
   const music = document.getElementById("christmasMusic");
-  const btn = document.getElementById("autoPlayButton");
 
-  // Clicking the button triggers audio legally
-  btn.addEventListener("click", () => {
-    music.volume = 0.55;
-    music.play().catch(e => console.log("Autoplay blocked:", e));
-  });
+  function fadeIn(targetVolume = 0.5, step = 0.02, intervalMs = 150) {
+    let v = 0;
+    music.volume = 0;
+    const fade = setInterval(() => {
+      v += step;
+      if (v >= targetVolume) {
+        v = targetVolume;
+        clearInterval(fade);
+      }
+      music.volume = v;
+    }, intervalMs);
+  }
 
-  // Try to click it automatically as soon as page loads
-  window.addEventListener("DOMContentLoaded", () => {
-    btn.click();
-  });
+  function setUpInteractionFallback() {
+    const handler = () => {
+      music.play().then(() => {
+        fadeIn();
+      }).catch(err => {
+        console.log("Playback still blocked after interaction:", err);
+      });
+
+      window.removeEventListener("click", handler);
+      window.removeEventListener("keydown", handler);
+      window.removeEventListener("mousemove", handler);
+      window.removeEventListener("touchstart", handler);
+    };
+
+    window.addEventListener("click", handler);
+    window.addEventListener("keydown", handler);
+    window.addEventListener("mousemove", handler);
+    window.addEventListener("touchstart", handler);
+  }
+
+  async function initMusic() {
+    try {
+      // Try to autoplay (muted at first)
+      music.volume = 0;
+      await music.play();
+      // If that works, fade in
+      fadeIn();
+    } catch (err) {
+      console.log("Autoplay blocked, will start on first interaction:", err);
+      setUpInteractionFallback();
+    }
+  }
+
+  window.addEventListener("load", initMusic);
 </script>
+
 </body>
 </html>
