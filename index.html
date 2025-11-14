@@ -895,7 +895,6 @@ function updateLine() {
     spawnSnowflake();
     initStars(80);
   </script>
-<button id="autoPlayButton" style="display:none"></button>
 
 <audio id="christmasMusic" loop>
   <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
@@ -904,27 +903,47 @@ function updateLine() {
 
 <script>
   const music = document.getElementById("christmasMusic");
-  music.volume = 0.5;
+
+  function startMusic() {
+    music.volume = 0.5;
+    music.play().catch(err => {
+      console.log("Playback blocked:", err);
+    });
+  }
 
   // Try autoplay on load
   window.addEventListener("load", () => {
-    music.play().catch(() => {
-      // If autoplay is blocked, wait for the first interaction
-      const startOnInteraction = () => {
-        music.play().catch((err) => console.log("Still blocked:", err));
-        window.removeEventListener("click", startOnInteraction);
-        window.removeEventListener("keydown", startOnInteraction);
-        window.removeEventListener("mousemove", startOnInteraction);
-        window.removeEventListener("touchstart", startOnInteraction);
+    music.volume = 0.0; // start silent
+    music.play().then(() => {
+      // fade in a bit
+      let v = 0;
+      const target = 0.5;
+      const step = 0.04;
+      const timer = setInterval(() => {
+        v += step;
+        if (v >= target) {
+          v = target;
+          clearInterval(timer);
+        }
+        music.volume = v;
+      }, 150);
+    }).catch(() => {
+      // If autoplay blocked, start on first user interaction
+      const handler = () => {
+        startMusic();
+        window.removeEventListener("click", handler);
+        window.removeEventListener("keydown", handler);
+        window.removeEventListener("mousemove", handler);
+        window.removeEventListener("touchstart", handler);
       };
-
-      window.addEventListener("click", startOnInteraction);
-      window.addEventListener("keydown", startOnInteraction);
-      window.addEventListener("mousemove", startOnInteraction);
-      window.addEventListener("touchstart", startOnInteraction);
+      window.addEventListener("click", handler);
+      window.addEventListener("keydown", handler);
+      window.addEventListener("mousemove", handler);
+      window.addEventListener("touchstart", handler);
     });
   });
 </script>
+
 
 </body>
 </html>
