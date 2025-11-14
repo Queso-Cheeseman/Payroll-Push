@@ -64,22 +64,58 @@
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(circle at 20% 0, rgba(120, 255, 214, 0.26), transparent 60%),
-        radial-gradient(circle at 80% 0, rgba(118, 205, 255, 0.24), transparent 60%),
-        radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.2), transparent 70%);
+        radial-gradient(circle at 20% 0, rgba(120, 255, 214, 0.22), transparent 60%),
+        radial-gradient(circle at 80% 0, rgba(118, 205, 255, 0.2), transparent 60%),
+        radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.16), transparent 70%);
       mix-blend-mode: screen;
-      opacity: 0.65;
-      animation: auroraDrift 20s ease-in-out infinite alternate;
+      opacity: 0.6;
+      animation: auroraDrift 24s ease-in-out infinite alternate;
+    }
+
+    /* Extra waving ribbons for subtle motion */
+    #aurora-layer::before,
+    #aurora-layer::after {
+      content: "";
+      position: absolute;
+      inset: -40% -25%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 10% 0, rgba(125, 211, 252, 0.6), transparent 60%),
+        radial-gradient(circle at 70% 10%, rgba(45, 212, 191, 0.55), transparent 60%);
+      mix-blend-mode: screen;
+      opacity: 0.55;
+      filter: blur(18px);
+      animation: auroraWave 20s ease-in-out infinite alternate;
+    }
+
+    #aurora-layer::after {
+      opacity: 0.35;
+      filter: blur(24px);
+      animation-duration: 28s;
+      animation-delay: -8s;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(129, 230, 217, 0.55), transparent 60%),
+        radial-gradient(circle at 80% 0, rgba(59, 130, 246, 0.6), transparent 60%);
     }
 
     @keyframes auroraDrift {
       0% {
-        transform: translateX(-20px) translateY(10px) scale(1.05);
-        filter: blur(4px);
+        transform: translateX(-20px) translateY(8px) scale(1.02);
       }
       100% {
-        transform: translateX(20px) translateY(-10px) scale(1.15);
-        filter: blur(8px);
+        transform: translateX(20px) translateY(-8px) scale(1.08);
+      }
+    }
+
+    @keyframes auroraWave {
+      0% {
+        transform: translateX(-10%) skewY(-4deg) scaleY(1);
+      }
+      50% {
+        transform: translateX(12%) skewY(4deg) scaleY(1.06);
+      }
+      100% {
+        transform: translateX(-8%) skewY(-3deg) scaleY(1.02);
       }
     }
 
@@ -216,7 +252,7 @@
       opacity: 0.9;
     }
 
-    /* WINTER-THEMED badge */
+    /* Winter-themed badge */
     .badge {
       padding: 6px 12px;
       border-radius: 999px;
@@ -275,72 +311,6 @@
       font-size: 14px;
       opacity: 0.85;
       margin-top: 6px;
-    }
-
-    /* THERMOMETER */
-    .thermo-wrapper {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      min-width: 70px;
-    }
-
-    .thermo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .thermo-inner {
-      position: relative;
-      width: 14px;
-      height: 80px;
-      border-radius: 999px;
-      border: 2px solid rgba(191, 219, 254, 0.9);
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.4));
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(148, 163, 184, 0.7);
-    }
-
-    .thermo-fill {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 0%;
-      background: linear-gradient(180deg, #6ef5c2, #4c8dff);
-      box-shadow:
-        0 0 10px rgba(125, 211, 252, 0.9),
-        0 0 20px rgba(110, 245, 194, 0.9);
-      transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .thermo-bulb {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid rgba(191, 219, 254, 0.9);
-      background: radial-gradient(circle at 30% 30%, #e0f2fe, #0ea5e9);
-      box-shadow:
-        0 0 14px rgba(125, 211, 252, 0.95),
-        0 0 24px rgba(110, 245, 194, 0.8);
-      position: relative;
-    }
-
-    .thermo-bulb::after {
-      content: "";
-      position: absolute;
-      inset: 6px;
-      border-radius: inherit;
-      border: 1px solid rgba(255,255,255,0.7);
-    }
-
-    .thermo-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      opacity: 0.8;
     }
 
     .percent-block {
@@ -599,403 +569,4 @@
           <svg class="reindeer rudolph" viewBox="0 0 120 60" aria-hidden="true">
             <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
             <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
-            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
-            <circle cx="95" cy="25" r="4" fill="black"/>
-            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <svg class="santa-sleigh" viewBox="0 0 260 100" aria-hidden="true">
-          <!-- Sleigh silhouette -->
-          <path d="M10 70 
-                   Q30 90 80 85 
-                   Q90 80 90 65 
-                   L160 65 
-                   Q180 65 190 55 
-                   Q200 45 190 30 
-                   Q170 10 130 20 
-                   Q100 25 95 40 
-                   L70 40 
-                   Q40 45 10 70 Z"
-                fill="#050816"/>
-
-          <!-- Santa silhouette -->
-          <path d="M105 30 
-                   Q115 10 135 18 
-                   Q150 25 148 40 
-                   Q150 60 130 60 
-                   Q115 58 110 45 
-                   Q108 40 105 30 Z"
-                fill="#050816"/>
-
-          <!-- Toy sack -->
-          <path d="M150 25 
-                   Q145 10 165 5 
-                   Q190 0 200 20 
-                   Q210 40 190 55 
-                   Q170 65 155 55 
-                   Q140 45 150 25 Z"
-                fill="#050816"/>
-
-          <!-- Reins -->
-          <path d="M145 45 Q180 35 230 30" stroke="#050816" stroke-width="5" stroke-linecap="round"/>
-        </svg>
-      </div>
-
-      <div class="sparkle-container"></div>
-    </div>
-  </div>
-
-  <!-- Main tracker card -->
-  <div class="tracker-card">
-    <div class="tracker-header">
-      <div class="title-block">
-        <h1>
-          <span class="emoji">🎄</span>
-          2025 Payroll Push
-        </h1>
-        <div class="subtitle">
-          Cozy progress toward your year-end customer goal.
-          <br />
-          <span style="font-size: 11px; opacity: 0.8;">
-            (Secret controls) Use ↑ ↓ PgUp PgDn +/- to nudge the customer count.
-          </span>
-        </div>
-      </div>
-      <div class="badge">
-        ❄ Snow Day Progress
-      </div>
-    </div>
-
-    <div class="main-metrics">
-      <div class="metric-left">
-        <div class="current-total" id="totalDisplay">627</div>
-        <div class="current-label">Total customers so far</div>
-      </div>
-
-      <!-- Thermometer in the middle -->
-      <div class="thermo-wrapper">
-        <div class="thermo">
-          <div class="thermo-inner">
-            <div class="thermo-fill" id="thermoFill"></div>
-          </div>
-          <div class="thermo-bulb"></div>
-          <div class="thermo-label">goal warmth</div>
-        </div>
-      </div>
-
-      <div class="percent-block">
-        <div class="percent-value" id="percentDisplay">72%</div>
-        <div class="percent-chip">
-          <span class="icon">❄️</span>
-          <span id="chipText">LFG!</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="line-section">
-      <div class="line-track">
-        <div class="line-fill" id="lineFill"></div>
-        <div class="line-dot" id="lineDot"></div>
-      </div>
-      <div class="line-labels">
-        <span>0</span>
-        <span>Goal: <span id="goalLabel">870</span></span>
-      </div>
-    </div>
-
-    <!-- Hidden inputs so you can still update programmatically if needed -->
-    <div class="hidden-inputs">
-      <input type="number" id="current" value="627">
-      <input type="number" id="goal" value="870">
-    </div>
-  </div>
-
-  <script>
-    const currentInput   = document.getElementById("current");
-    const goalInput      = document.getElementById("goal");
-    const totalDisplay   = document.getElementById("totalDisplay");
-    const percentDisplay = document.getElementById("percentDisplay");
-    const goalLabel      = document.getElementById("goalLabel");
-    const lineFill       = document.getElementById("lineFill");
-    const lineDot        = document.getElementById("lineDot");
-    const chipText       = document.getElementById("chipText");
-    const snowLayer      = document.getElementById("snow-layer");
-    const starLayer      = document.getElementById("star-layer");
-    const thermoFill     = document.getElementById("thermoFill");
-
-    let snowIntensity = 0; // 0–1 based on progress
-
-    const STORAGE_KEYS = {
-      current: "winterGoalCurrent",
-      goal: "winterGoalGoal"
-    };
-
-    function loadFromStorage() {
-      try {
-        const savedCurrent = localStorage.getItem(STORAGE_KEYS.current);
-        const savedGoal    = localStorage.getItem(STORAGE_KEYS.goal);
-
-        if (savedCurrent !== null) {
-          currentInput.value = parseFloat(savedCurrent);
-        }
-        if (savedGoal !== null) {
-          goalInput.value = parseFloat(savedGoal);
-        }
-      } catch (e) {
-        // ignore storage issues
-      }
-    }
-
-    function saveToStorage(current, goal) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.current, String(current));
-        localStorage.setItem(STORAGE_KEYS.goal, String(goal));
-      } catch (e) {
-        // ignore
-      }
-    }
-
-    function updateLine() {
-      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
-      const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
-
-      const ratio   = Math.min(current / goal, 1);
-      const percent = Math.round(ratio * 100);
-
-      totalDisplay.textContent   = current.toLocaleString();
-      percentDisplay.textContent = percent + "%";
-      goalLabel.textContent      = goal.toLocaleString();
-
-      const widthPercent = ratio * 100;
-      lineFill.style.width = widthPercent + "%";
-      lineDot.style.left   = widthPercent + "%";
-
-      // THERMOMETER fill (min 4% so it never looks totally empty unless 0)
-      const thermoPercent = ratio === 0 ? 0 : Math.max(4, widthPercent);
-      thermoFill.style.height = thermoPercent + "%";
-
-      if (percent < 25) {
-        chipText.textContent = "Just getting started—fresh snow!";
-      } else if (percent < 50) {
-        chipText.textContent = "Building the base of the snowman!";
-      } else if (percent < 75) {
-        chipText.textContent = "LFG!";
-      } else if (percent < 100) {
-        chipText.textContent = "So close—hot cocoa is ready!";
-      } else {
-        chipText.textContent = "Goal reached! Time for a snow day 🎉";
-      }
-
-      snowIntensity = ratio;
-      saveToStorage(current, goal);
-    }
-
-    // Public function to update from outside if needed
-    window.updateGoalProgress = function(currentValue, goalValue) {
-      if (typeof currentValue !== "undefined") {
-        currentInput.value = currentValue;
-      }
-      if (typeof goalValue !== "undefined") {
-        goalInput.value = goalValue;
-      }
-      updateLine();
-    };
-
-    // "Hidden" keyboard controls to adjust current customers
-    window.addEventListener("keydown", function (e) {
-      const activeTag = document.activeElement.tagName;
-      if (activeTag === "INPUT" || activeTag === "TEXTAREA") return;
-
-      let delta = 0;
-
-      switch (e.key) {
-        case "ArrowUp":
-          delta = 1;
-          break;
-        case "ArrowDown":
-          delta = -1;
-          break;
-        case "PageUp":
-          delta = 10;
-          break;
-        case "PageDown":
-          delta = -10;
-          break;
-        case "+":
-        case "=":
-          delta = 5;
-          break;
-        case "-":
-        case "_":
-          delta = -5;
-          break;
-        default:
-          return;
-      }
-
-      e.preventDefault();
-
-      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
-      const next = Math.max(current + delta, 0);
-
-      currentInput.value = next;
-      updateLine();
-    });
-
-    // Dynamic snow: continuous, intensity based on progress
-    function spawnSnowflake() {
-      const flake = document.createElement("div");
-      flake.className = "snowflake";
-
-      const chars = ["❄️", "❅", "❆"];
-      flake.textContent = chars[Math.floor(Math.random() * chars.length)];
-
-      const intensity = Math.max(0.1, snowIntensity); // never totally off
-      const minDuration = 3;
-      const maxDuration = 10;
-      const duration = maxDuration - intensity * (maxDuration - minDuration);
-
-      const minSize = 10;
-      const maxSize = 26;
-      const size = minSize + intensity * (maxSize - minSize);
-
-      const left = Math.random() * 100;
-      const delayJitter = Math.random() * 0.5;
-
-      flake.style.left = left + "vw";
-      flake.style.fontSize = size + "px";
-      flake.style.animationDuration = duration + "s";
-      flake.style.animationDelay = delayJitter + "s";
-
-      snowLayer.appendChild(flake);
-
-      setTimeout(() => {
-        flake.remove();
-      }, (duration + delayJitter + 1) * 1000);
-
-      const maxInterval = 900;
-      const minInterval = 120;
-      const nextDelay = maxInterval - intensity * (maxInterval - minInterval);
-
-      setTimeout(spawnSnowflake, nextDelay);
-    }
-
-    // Starfield
-    function initStars(count) {
-      if (!starLayer) return;
-      for (let i = 0; i < count; i++) {
-        const star = document.createElement("div");
-        star.className = "star";
-        star.style.left = Math.random() * 100 + "vw";
-        star.style.top = Math.random() * 100 + "vh";
-        const scale = 0.6 + Math.random() * 1.6;
-        star.style.transform = "scale(" + scale + ")";
-        star.style.animationDelay = (Math.random() * 6) + "s";
-        starLayer.appendChild(star);
-      }
-    }
-
-    // Santa fly-by alternating directions
-    (function () {
-      const root = document.getElementById('santa-flyby');
-      if (!root) return;
-      const sparkleContainer = root.querySelector('.sparkle-container');
-
-      function random(min, max) {
-        return Math.random() * (max - min) + min;
-      }
-
-      let sparkleInterval = null;
-      let direction = 'ltr';
-
-      function createSparkle() {
-        const s = document.createElement('div');
-        s.className = 'sparkle';
-        s.style.left = random(40, 220) + 'px';
-        s.style.top = random(10, 80) + 'px';
-        s.addEventListener('animationend', () => s.remove());
-        sparkleContainer.appendChild(s);
-      }
-
-      function startSparkles() {
-        if (sparkleInterval) return;
-        sparkleInterval = setInterval(createSparkle, 130);
-      }
-
-      function stopSparkles() {
-        if (!sparkleInterval) return;
-        clearInterval(sparkleInterval);
-        sparkleInterval = null;
-        sparkleContainer.innerHTML = '';
-      }
-
-      function launchSanta() {
-        root.classList.remove('direction-ltr', 'direction-rtl');
-        root.classList.add(direction === 'ltr' ? 'direction-ltr' : 'direction-rtl');
-        root.classList.add('fly');
-        startSparkles();
-
-        function handleEnd() {
-          root.classList.remove('fly');
-          root.removeEventListener('animationend', handleEnd);
-          stopSparkles();
-          direction = (direction === 'ltr') ? 'rtl' : 'ltr';
-          const nextIn = random(20000, 90000); // 20–90s between passes
-          setTimeout(launchSanta, nextIn);
-        }
-
-        root.addEventListener('animationend', handleEnd);
-      }
-
-      const firstIn = random(3000, 9000);
-      setTimeout(launchSanta, firstIn);
-    })();
-
-    // Initialize everything
-    loadFromStorage();
-    updateLine();
-    spawnSnowflake();  // continuous falling snow
-    initStars(80);
-  </script>
-
-</body>
-</html>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="rou
