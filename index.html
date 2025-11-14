@@ -5,12 +5,13 @@
   <title>2025 Payroll Push Progress Tracker</title>
   <style>
     :root {
-      --snow-blue: #e4f3ff;
-      --frost-blue: #b3dcff;
-      --mid-blue: #4c8dff;
-      --deep-blue: #1b2a4a;
-      --goal-green: #57e3ff;
-      --goal-teal: #6ef5c2;
+      /* Mangomint-inspired palette */
+      --mm-bg-deep: #020611;
+      --mm-ink-soft: #061320;
+      --mm-mint: #00C49A;
+      --mm-mint-soft: #C9FFF0;
+      --mm-mango: #FFC857;
+      --mm-border-soft: rgba(0, 196, 154, 0.35);
     }
 
     * {
@@ -26,8 +27,8 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #ffffff;
       background:
-        radial-gradient(circle at top, #ffffff 0, #ffffff 5%, rgba(255,255,255,0.1) 30%, transparent 60%),
-        linear-gradient(180deg, #122138, #1b3256 40%, #101726 100%);
+        radial-gradient(circle at top, #071018 0, #071018 5%, rgba(7,16,24,0.6) 30%, transparent 60%),
+        linear-gradient(180deg, var(--mm-bg-deep), #071821 40%, #031914 100%);
       overflow: hidden;
     }
 
@@ -71,12 +72,12 @@
       border-radius: 24px;
       background: linear-gradient(
         145deg,
-        rgba(255,255,255,0.12),
-        rgba(180,220,255,0.18)
+        rgba(6, 19, 32, 0.96),
+        rgba(3, 25, 20, 0.98)
       );
       box-shadow:
-        0 24px 60px rgba(0,0,0,0.55),
-        0 0 0 1px rgba(255,255,255,0.08);
+        0 24px 60px rgba(0,0,0,0.7),
+        0 0 0 1px var(--mm-border-soft);
       backdrop-filter: blur(18px);
       width: min(900px, 90vw);
       z-index: 1;
@@ -112,7 +113,8 @@
 
     .subtitle {
       font-size: 13px;
-      opacity: 0.8;
+      opacity: 0.85;
+      color: #EAFBF5;
     }
 
     .badge {
@@ -121,10 +123,12 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      background: linear-gradient(120deg, #5dd5ff, #9ff2ff);
-      color: #08263a;
+      background: linear-gradient(120deg, var(--mm-mango), var(--mm-mint));
+      color: #03120e;
       font-weight: 700;
-      box-shadow: 0 0 14px rgba(159, 242, 255, 0.7);
+      box-shadow:
+        0 0 16px rgba(0, 196, 154, 0.7),
+        0 0 30px rgba(255, 200, 87, 0.65);
     }
 
     .main-metrics {
@@ -140,12 +144,16 @@
       font-size: 56px;
       font-weight: 800;
       line-height: 1;
-      text-shadow: 0 0 30px rgba(255,255,255,0.3);
+      text-shadow:
+        0 0 24px rgba(0,0,0,0.9),
+        0 0 36px rgba(0, 196, 154, 0.35);
+      color: #F7FFFD;
     }
 
     .current-label {
       font-size: 14px;
-      opacity: 0.85;
+      opacity: 0.9;
+      color: #CFF7EB;
       margin-top: 6px;
     }
 
@@ -155,344 +163,4 @@
 
     .percent-value {
       font-size: 28px;
-      font-weight: 700;
-    }
-
-    .percent-chip {
-      margin-top: 4px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: rgba(9, 148, 255, 0.28);
-      border: 1px solid rgba(181, 227, 255, 0.5);
-    }
-
-    .percent-chip span.icon {
-      font-size: 16px;
-    }
-
-    /* Line graph */
-    .line-section {
-      margin-top: 4px;
-    }
-
-    .line-track {
-      position: relative;
-      width: 100%;
-      height: 14px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
-      overflow: hidden;
-      box-shadow:
-        inset 0 0 6px rgba(0,0,0,0.7),
-        0 0 18px rgba(132, 225, 255, 0.2);
-    }
-
-    .line-fill {
-      position: absolute;
-      inset: 0;
-      width: 0%;
-      background: linear-gradient(90deg, var(--goal-teal), var(--goal-green), var(--mid-blue));
-      border-radius: inherit;
-      box-shadow:
-        0 0 18px rgba(111, 245, 194, 0.9),
-        0 0 40px rgba(87, 227, 255, 0.7);
-      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .line-dot {
-      position: absolute;
-      top: 50%;
-      left: 0%;
-      transform: translate(-50%, -50%);
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #9fffe0);
-      box-shadow:
-        0 0 16px rgba(210, 255, 255, 0.8),
-        0 0 32px rgba(86, 237, 255, 0.9);
-      border: 2px solid rgba(255,255,255,0.8);
-      transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .line-dot::after {
-      content: "";
-      position: absolute;
-      inset: 5px;
-      border-radius: inherit;
-      border: 1px solid rgba(255,255,255,0.7);
-    }
-
-    .line-labels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.8;
-    }
-
-    .hidden-inputs {
-      display: none;
-    }
-
-    @media (max-width: 540px) {
-      .tracker-card {
-        padding: 24px 18px;
-      }
-      .current-total {
-        font-size: 44px;
-      }
-      .tracker-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .percent-block {
-        text-align: left;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Dynamic snow layer -->
-  <div id="snow-layer"></div>
-
-  <div class="tracker-card">
-    <div class="tracker-header">
-      <div class="title-block">
-        <h1>
-          <span class="emoji">🎄</span>
-          2025 Payroll Push
-        </h1>
-        <div class="subtitle">
-          Cozy progress toward your year-end customer goal.
-          <br />
-          <span style="font-size: 11px; opacity: 0.8;">
-           
-          </span>
-        </div>
-      </div>
-      <div class="badge">Snow Day Progress</div>
-    </div>
-
-    <div class="main-metrics">
-      <div>
-        <div class="current-total" id="totalDisplay">627</div>
-        <div class="current-label">Total customers so far</div>
-      </div>
-      <div class="percent-block">
-        <div class="percent-value" id="percentDisplay">72%</div>
-        <div class="percent-chip">
-          <span class="icon">❄️</span>
-          <span id="chipText">LFG!</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="line-section">
-      <div class="line-track">
-        <div class="line-fill" id="lineFill"></div>
-        <div class="line-dot" id="lineDot"></div>
-      </div>
-      <div class="line-labels">
-        <span>0</span>
-        <span>Goal: <span id="goalLabel">870</span></span>
-      </div>
-    </div>
-
-    <!-- Hidden inputs so you can still update programmatically if needed -->
-    <div class="hidden-inputs">
-      <input type="number" id="current" value="627">
-      <input type="number" id="goal" value="870">
-    </div>
-  </div>
-
-  <script>
-    const currentInput   = document.getElementById("current");
-    const goalInput      = document.getElementById("goal");
-    const totalDisplay   = document.getElementById("totalDisplay");
-    const percentDisplay = document.getElementById("percentDisplay");
-    const goalLabel      = document.getElementById("goalLabel");
-    const lineFill       = document.getElementById("lineFill");
-    const lineDot        = document.getElementById("lineDot");
-    const chipText       = document.getElementById("chipText");
-    const snowLayer      = document.getElementById("snow-layer");
-
-    let snowIntensity = 0; // 0–1 based on progress
-
-    const STORAGE_KEYS = {
-      current: "winterGoalCurrent",
-      goal: "winterGoalGoal"
-    };
-
-    function loadFromStorage() {
-      try {
-        const savedCurrent = localStorage.getItem(STORAGE_KEYS.current);
-        const savedGoal    = localStorage.getItem(STORAGE_KEYS.goal);
-
-        if (savedCurrent !== null) {
-          currentInput.value = parseFloat(savedCurrent);
-        }
-        if (savedGoal !== null) {
-          goalInput.value = parseFloat(savedGoal);
-        }
-      } catch (e) {
-        // If storage is blocked, just ignore.
-      }
-    }
-
-    function saveToStorage(current, goal) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.current, String(current));
-        localStorage.setItem(STORAGE_KEYS.goal, String(goal));
-      } catch (e) {
-        // Ignore if storage is unavailable
-      }
-    }
-
-    function updateLine() {
-      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
-      const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
-
-      const ratio   = Math.min(current / goal, 1);
-      const percent = Math.round(ratio * 100);
-
-      // Update visuals
-      totalDisplay.textContent   = current.toLocaleString();
-      percentDisplay.textContent = percent + "%";
-      goalLabel.textContent      = goal.toLocaleString();
-
-      const widthPercent = ratio * 100;
-      lineFill.style.width = widthPercent + "%";
-      lineDot.style.left   = widthPercent + "%";
-
-      // Fun message based on progress
-      if (percent < 25) {
-        chipText.textContent = "Just getting started—fresh snow!";
-      } else if (percent < 50) {
-        chipText.textContent = "Building the base of the snowman!";
-      } else if (percent < 75) {
-        chipText.textContent = "LFG!";
-      } else if (percent < 100) {
-        chipText.textContent = "So close—hot cocoa is ready!";
-      } else {
-        chipText.textContent = "Goal reached! Time for a snow day 🎉";
-      }
-
-      // Update snow intensity (0–1)
-      snowIntensity = ratio;
-
-      // Save values
-      saveToStorage(current, goal);
-    }
-
-    // Public function (still usable from outside / programmatically)
-    window.updateGoalProgress = function(currentValue, goalValue) {
-      if (typeof currentValue !== "undefined") {
-        currentInput.value = currentValue;
-      }
-      if (typeof goalValue !== "undefined") {
-        goalInput.value = goalValue;
-      }
-      updateLine();
-    };
-
-    // Keyboard controls for adjusting total customers
-    // ArrowUp   = +1
-    // ArrowDown = -1
-    // PageUp    = +10
-    // PageDown  = -10
-    // + or =    = +5
-    // - or _    = -5
-    window.addEventListener("keydown", function (e) {
-      const activeTag = document.activeElement.tagName;
-      if (activeTag === "INPUT" || activeTag === "TEXTAREA") return;
-
-      let delta = 0;
-
-      switch (e.key) {
-        case "ArrowUp":
-          delta = 1;
-          break;
-        case "ArrowDown":
-          delta = -1;
-          break;
-        case "PageUp":
-          delta = 10;
-          break;
-        case "PageDown":
-          delta = -10;
-          break;
-        case "+":
-        case "=":
-          delta = 5;
-          break;
-        case "-":
-        case "_":
-          delta = -5;
-          break;
-        default:
-          return;
-      }
-
-      e.preventDefault();
-
-      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
-      const next = Math.max(current + delta, 0);
-
-      currentInput.value = next;
-      updateLine();
-    });
-
-    // Dynamic snow: more progress = more snow, faster & slightly larger
-    function spawnSnowflake() {
-      const flake = document.createElement("div");
-      flake.className = "snowflake";
-
-      // Choose a random snow character
-      const chars = ["❄️", "❅", "❆"];
-      flake.textContent = chars[Math.floor(Math.random() * chars.length)];
-
-      const intensity = Math.max(0.05, snowIntensity); // avoid 0
-      const minDuration = 3;  // seconds
-      const maxDuration = 10; // seconds
-      const duration = maxDuration - intensity * (maxDuration - minDuration);
-
-      const minSize = 10;
-      const maxSize = 26;
-      const size = minSize + intensity * (maxSize - minSize);
-
-      const left = Math.random() * 100; // vw
-      const delayJitter = Math.random() * 0.5; // small stagger
-
-      flake.style.left = left + "vw";
-      flake.style.fontSize = size + "px";
-      flake.style.animationDuration = duration + "s";
-      flake.style.animationDelay = delayJitter + "s";
-
-      snowLayer.appendChild(flake);
-
-      // Clean up after it falls
-      setTimeout(() => {
-        flake.remove();
-      }, (duration + delayJitter + 1) * 1000);
-
-      // Schedule next flake based on intensity
-      const maxInterval = 900; // ms
-      const minInterval = 120; // ms
-      const nextDelay = maxInterval - intensity * (maxInterval - minInterval);
-
-      setTimeout(spawnSnowflake, nextDelay);
-    }
-
-    // Initialize from storage, then start everything
-    loadFromStorage();
-    updateLine();
-    spawnSnowflake();
-  </script>
-</body>
-</html>
+      font-w
