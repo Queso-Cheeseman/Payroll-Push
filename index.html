@@ -159,8 +159,18 @@
   z-index: 2;
 }
 .tracker-card::before {
-  background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent 65%);
-  opacity: 0.6;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.15); /* a faint frosting layer */
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tracker-card * {
+  position: relative;
+  z-index: 1;
 }
 
     /* subtle top highlight to enhance 3D, but STATIC (no white animation) */
