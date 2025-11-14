@@ -400,7 +400,143 @@
       display: none;
     }
 
-    
+    /* SANTA FLY-BY */
+    #santa-flyby {
+      position: fixed;
+      top: 12vh;
+      left: -700px;
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0;
+    }
+
+    #santa-flyby .formation {
+      position: relative;
+    }
+
+    #santa-flyby .sleigh-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    #santa-flyby.direction-ltr .sleigh-wrapper {
+      flex-direction: row;
+    }
+
+    #santa-flyby.direction-rtl .sleigh-wrapper {
+      flex-direction: row-reverse;
+    }
+
+    .reindeer-team {
+      display: flex;
+      gap: 10px;
+    }
+
+    .reindeer-team svg.reindeer {
+      height: 56px;
+      animation: rGallop 0.45s ease-in-out infinite alternate;
+      fill: #020816;
+    }
+
+    .reindeer-team .reindeer:nth-child(1),
+    .reindeer-team .reindeer:nth-child(2) {
+      transform: translateY(-12px);
+    }
+    .reindeer-team .reindeer:nth-child(3),
+    .reindeer-team .reindeer:nth-child(4) {
+      transform: translateY(-6px);
+    }
+    .reindeer-team .reindeer:nth-child(5),
+    .reindeer-team .reindeer:nth-child(6) {
+      transform: translateY(-1px);
+    }
+    .reindeer-team .reindeer:nth-child(7),
+    .reindeer-team .reindeer:nth-child(8) {
+      transform: translateY(5px);
+    }
+    .reindeer-team .reindeer:nth-child(9) {
+      transform: translateY(2px);
+    }
+
+    .santa-sleigh {
+      height: 90px;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.45));
+    }
+
+    @keyframes rGallop {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-6px); }
+    }
+
+    #santa-flyby.direction-ltr.fly {
+      opacity: 1;
+      animation: flyby-ltr 13s linear forwards;
+    }
+
+    #santa-flyby.direction-rtl.fly {
+      opacity: 1;
+      animation: flyby-rtl 13s linear forwards;
+    }
+
+    @keyframes flyby-ltr {
+      0%   { transform: translateX(-130vw) translateY(0vh); opacity:0; }
+      10%  { opacity:1; }
+      50%  { transform: translateX(0vw) translateY(-8vh); }
+      90%  { opacity:1; }
+      100% { transform: translateX(120vw) translateY(0vh); opacity:0; }
+    }
+
+    @keyframes flyby-rtl {
+      0%   { transform: translateX(120vw) translateY(0vh); opacity:0; }
+      10%  { opacity:1; }
+      50%  { transform: translateX(0vw) translateY(-8vh); }
+      90%  { opacity:1; }
+      100% { transform: translateX(-130vw) translateY(0vh); opacity:0; }
+    }
+
+    .sparkle-container {
+      position: absolute;
+      inset: 0;
+      overflow: visible;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 8px rgba(255,255,255,0.9);
+      opacity: 0;
+      animation: sparkleFade 1.1s ease-out forwards;
+    }
+
+    @keyframes sparkleFade {
+      0%   { transform: scale(0.4); opacity:0; }
+      20%  { opacity:1; }
+      100% { transform: translate(-40px, -20px) scale(1); opacity:0; }
+    }
+
+    @media (max-width: 540px) {
+      .tracker-card {
+        padding: 24px 18px;
+      }
+      .current-total {
+        font-size: 42px;
+      }
+      .tracker-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .percent-block {
+        text-align: left;
+      }
+      #santa-flyby {
+        top: 8vh;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -409,7 +545,92 @@
   <div id="aurora-layer"></div>
   <div id="snow-layer"></div>
 
-  
+  <!-- Santa fly-by -->
+  <div id="santa-flyby" class="direction-ltr">
+    <div class="formation">
+      <div class="sleigh-wrapper">
+        <div class="reindeer-team">
+          <!-- Rudolph + 8 more -->
+          <svg class="reindeer rudolph" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <!-- 8 identical reindeer -->
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <svg class="reindeer" viewBox="0 0 120 60" aria-hidden="true">
+            <path d="M15 40 L35 35 L55 40 L75 38 L95 25 L80 10 L55 18 L35 12 L15 16 Z" fill="black"/>
+            <circle cx="95" cy="25" r="4" fill="black"/>
+            <path d="M90 10 L85 2 M92 10 L97 2" stroke="black" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <svg class="santa-sleigh" viewBox="0 0 260 100" aria-hidden="true">
+          <path d="M10 70 
+                   Q30 90 80 85 
+                   Q90 80 90 65 
+                   L160 65 
+                   Q180 65 190 55 
+                   Q200 45 190 30 
+                   Q170 10 130 20 
+                   Q100 25 95 40 
+                   L70 40 
+                   Q40 45 10 70 Z"
+                fill="#050816"/>
+          <path d="M105 30 
+                   Q115 10 135 18 
+                   Q150 25 148 40 
+                   Q150 60 130 60 
+                   Q115 58 110 45 
+                   Q108 40 105 30 Z"
+                fill="#050816"/>
+          <path d="M150 25 
+                   Q145 10 165 5 
+                   Q190 0 200 20 
+                   Q210 40 190 55 
+                   Q170 65 155 55 
+                   Q140 45 150 25 Z"
+                fill="#050816"/>
+          <path d="M145 45 Q180 35 230 30" stroke="#050816" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sparkle-container"></div>
+    </div>
+  </div>
 
   <!-- Main tracker card -->
   <div class="tracker-card">
