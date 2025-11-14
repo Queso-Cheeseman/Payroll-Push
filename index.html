@@ -494,5 +494,102 @@
     updateLine();
     spawnSnowflake();
   </script>
+  <!-- Santa fly-by animation (realistic-ish SVG + reindeer + sparkles) -->
+<div id="santa-flyby">
+  <div class="sleigh-wrapper">
+    <div class="reindeer-team">
+      <!-- 9 reindeer: Rudolph at front with red nose -->
+      <!-- You can tweak colors in the SVG if you like -->
+
+      <!-- Reindeer base shape as inline SVG, repeated 9 times -->
+      <svg class="reindeer rudolph" viewBox="0 0 100 60" aria-hidden="true">
+        <!-- Body -->
+        <ellipse cx="45" cy="35" rx="26" ry="14" fill="#8b5a2b" />
+        <!-- Neck / head -->
+        <rect x="58" y="20" width="10" height="16" rx="3" fill="#8b5a2b" />
+        <ellipse cx="70" cy="24" rx="9" ry="7" fill="#8b5a2b" />
+        <!-- Legs -->
+        <rect x="32" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="40" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="48" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="56" y="44" width="4" height="12" fill="#4b2c12" />
+        <!-- Tail -->
+        <polygon points="26,30 32,28 32,34" fill="#8b5a2b" />
+        <!-- Eye -->
+        <circle cx="73" cy="23" r="2" fill="#fff" />
+        <circle cx="74" cy="23" r="1" fill="#000" />
+        <!-- Antlers -->
+        <path d="M68 15 L64 6 M68 14 L72 6" stroke="#d2b48c" stroke-width="2" stroke-linecap="round" />
+        <!-- Rudoph red nose -->
+        <circle cx="79" cy="24" r="3" fill="red" />
+      </svg>
+
+      <!-- 8 more “normal” reindeer -->
+      <svg class="reindeer" viewBox="0 0 100 60" aria-hidden="true">
+        <ellipse cx="45" cy="35" rx="26" ry="14" fill="#8b5a2b" />
+        <rect x="58" y="20" width="10" height="16" rx="3" fill="#8b5a2b" />
+        <ellipse cx="70" cy="24" rx="9" ry="7" fill="#8b5a2b" />
+        <rect x="32" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="40" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="48" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="56" y="44" width="4" height="12" fill="#4b2c12" />
+        <polygon points="26,30 32,28 32,34" fill="#8b5a2b" />
+        <circle cx="73" cy="23" r="2" fill="#fff" />
+        <circle cx="74" cy="23" r="1" fill="#000" />
+        <path d="M68 15 L64 6 M68 14 L72 6" stroke="#d2b48c" stroke-width="2" stroke-linecap="round" />
+        <!-- dark nose -->
+        <circle cx="79" cy="24" r="3" fill="#3b2a20" />
+      </svg>
+
+      <svg class="reindeer" viewBox="0 0 100 60" aria-hidden="true">
+        <ellipse cx="45" cy="35" rx="26" ry="14" fill="#8b5a2b" />
+        <rect x="58" y="20" width="10" height="16" rx="3" fill="#8b5a2b" />
+        <ellipse cx="70" cy="24" rx="9" ry="7" fill="#8b5a2b" />
+        <rect x="32" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="40" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="48" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="56" y="44" width="4" height="12" fill="#4b2c12" />
+        <polygon points="26,30 32,28 32,34" fill="#8b5a2b" />
+        <circle cx="73" cy="23" r="2" fill="#fff" />
+        <circle cx="74" cy="23" r="1" fill="#000" />
+        <path d="M68 15 L64 6 M68 14 L72 6" stroke="#d2b48c" stroke-width="2" stroke-linecap="round" />
+        <circle cx="79" cy="24" r="3" fill="#3b2a20" />
+      </svg>
+
+      <svg class="reindeer" viewBox="0 0 100 60" aria-hidden="true">
+        <ellipse cx="45" cy="35" rx="26" ry="14" fill="#8b5a2b" />
+        <rect x="58" y="20" width="10" height="16" rx="3" fill="#8b5a2b" />
+        <ellipse cx="70" cy="24" rx="9" ry="7" fill="#8b5a2b" />
+        <rect x="32" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="40" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="48" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="56" y="44" width="4" height="12" fill="#4b2c12" />
+        <polygon points="26,30 32,28 32,34" fill="#8b5a2b" />
+        <circle cx="73" cy="23" r="2" fill="#fff" />
+        <circle cx="74" cy="23" r="1" fill="#000" />
+        <path d="M68 15 L64 6 M68 14 L72 6" stroke="#d2b48c" stroke-width="2" stroke-linecap="round" />
+        <circle cx="79" cy="24" r="3" fill="#3b2a20" />
+      </svg>
+
+      <svg class="reindeer" viewBox="0 0 100 60" aria-hidden="true">
+        <ellipse cx="45" cy="35" rx="26" ry="14" fill="#8b5a2b" />
+        <rect x="58" y="20" width="10" height="16" rx="3" fill="#8b5a2b" />
+        <ellipse cx="70" cy="24" rx="9" ry="7" fill="#8b5a2b" />
+        <rect x="32" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="40" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="48" y="44" width="4" height="12" fill="#4b2c12" />
+        <rect x="56" y="44" width="4" height="12" fill="#4b2c12" />
+        <polygon points="26,30 32,28 32,34" fill="#8b5a2b" />
+        <circle cx="73" cy="23" r="2" fill="#fff" />
+        <circle cx="74" cy="23" r="1" fill="#000" />
+        <path d="M68 15 L64 6 M68 14 L72 6" stroke="#d2b48c" stroke-width="2" stroke-linecap="round" />
+        <circle cx="79" cy="24" r="3" fill="#3b2a20" />
+      </svg>
+
+      <svg class="reindeer" viewBox="0 0 100 60" aria-hidden="true">
+        <ellipse cx="45" cy="35" rx="26" ry="14" fill="#8b5a2b" />
+        <rect x="58" y="20" width="10" height="16" rx="3" fill="#8b5a2b" />
+        <ellipse cx="70" cy="24" rx="9" ry="7" fill="#8b5a2b" />
+        <rect x="32" y="44" width="4" height="12" fill="#4b2c12"
 </body>
 </html>
