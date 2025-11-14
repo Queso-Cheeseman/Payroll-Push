@@ -3,7 +3,607 @@
 <head>
   <meta charset="UTF-8" />
   <title>Winter Goal Tracker</title>
-  <!-- (full HTML omitted for brevity in this code cell, but user expects actual content. For the execution, include copy.) -->
+  <style>
+    :root {
+      --snow-blue: #e4f3ff;
+      --frost-blue: #b3dcff;
+      --mid-blue: #4c8dff;
+      --deep-blue: #1b2a4a;
+      --goal-green: #57e3ff;
+      --goal-teal: #6ef5c2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #ffffff;
+      background:
+        radial-gradient(circle at top, #ffffff 0, #ffffff 5%, rgba(255,255,255,0.1) 30%, transparent 60%),
+        linear-gradient(180deg, #122138, #1b3256 40%, #101726 100%);
+      overflow: hidden;
+    }
+
+    /* Snow layer container */
+    #snow-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      color: #ffffff;
+      opacity: 0.75;
+      pointer-events: none;
+      animation-name: snowfall;
+      animation-timing-function: linear;
+      animation-iteration-count: 1;
+    }
+
+    @keyframes snowfall {
+      0% {
+        transform: translateY(-10px) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(110vh) translateX(40px);
+        opacity: 0;
+      }
+    }
+
+    /* Santa sleigh */
+    #santa-sleigh {
+      position: fixed;
+      top: 12vh;
+      left: -30vw;
+      font-size: 34px;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0;
+      white-space: nowrap;
+      text-shadow: 0 0 12px rgba(0,0,0,0.6);
+    }
+
+    @keyframes sleighFlight {
+      0% {
+        transform: translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(140vw);
+        opacity: 0;
+      }
+    }
+
+    .tracker-card {
+      position: relative;
+      padding: 32px 40px 22px 40px;
+      border-radius: 24px;
+      background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.12),
+        rgba(180,220,255,0.18)
+      );
+      box-shadow:
+        0 24px 60px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      width: min(640px, 90vw);
+      z-index: 1;
+    }
+
+    .tracker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-block h1 span.emoji {
+      font-size: 26px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: linear-gradient(120deg, #5dd5ff, #9ff2ff);
+      color: #08263a;
+      font-weight: 700;
+      box-shadow: 0 0 14px rgba(159, 242, 255, 0.7);
+    }
+
+    .main-metrics {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .current-total {
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(255,255,255,0.3);
+    }
+
+    .current-label {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
+
+    .percent-block {
+      text-align: right;
+    }
+
+    .percent-value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .percent-chip {
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(9, 148, 255, 0.28);
+      border: 1px solid rgba(181, 227, 255, 0.5);
+    }
+
+    .percent-chip span.icon {
+      font-size: 16px;
+    }
+
+    /* Line graph */
+    .line-section {
+      margin-top: 4px;
+    }
+
+    .line-track {
+      position: relative;
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 6px rgba(0,0,0,0.7),
+        0 0 18px rgba(132, 225, 255, 0.2);
+    }
+
+    .line-fill {
+      position: absolute;
+      inset: 0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--goal-teal), var(--goal-green), var(--mid-blue));
+      border-radius: inherit;
+      box-shadow:
+        0 0 18px rgba(111, 245, 194, 0.9),
+        0 0 40px rgba(87, 227, 255, 0.7);
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .line-dot {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #9fffe0);
+      box-shadow:
+        0 0 16px rgba(210, 255, 255, 0.8),
+        0 0 32px rgba(86, 237, 255, 0.9);
+      border: 2px solid rgba(255,255,255,0.8);
+      transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .line-dot::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: inherit;
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .line-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .last-updated {
+      margin-top: 14px;
+      font-size: 11px;
+      opacity: 0.75;
+      text-align: right;
+    }
+
+    .hidden-inputs {
+      display: none;
+    }
+
+    @media (max-width: 540px) {
+      .tracker-card {
+        padding: 24px 18px 18px 18px;
+      }
+      .current-total {
+        font-size: 44px;
+      }
+      .tracker-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .percent-block {
+        text-align: left;
+      }
+      .last-updated {
+        text-align: left;
+      }
+    }
+  </style>
 </head>
-<body>Full content placeholder</body>
+<body>
+
+  <!-- Dynamic snow layer -->
+  <div id="snow-layer"></div>
+
+  <!-- Santa sleigh that occasionally flies across the screen -->
+  <div id="santa-sleigh">🎅🦌🦌🦌</div>
+
+  <div class="tracker-card">
+    <div class="tracker-header">
+      <div class="title-block">
+        <h1>
+          <span class="emoji">🎄</span>
+          Winter Goal Tracker
+        </h1>
+        <div class="subtitle">
+          Cozy progress toward your year-end customer goal.
+          <br />
+          <span style="font-size: 11px; opacity: 0.8;">
+            Use Arrow ↑/↓, PageUp/PageDown, + and - keys to adjust customers. Changes are saved.
+          </span>
+        </div>
+      </div>
+      <div class="badge">Snow Day Progress</div>
+    </div>
+
+    <div class="main-metrics">
+      <div>
+        <div class="current-total" id="totalDisplay">627</div>
+        <div class="current-label">Total customers so far</div>
+      </div>
+      <div class="percent-block">
+        <div class="percent-value" id="percentDisplay">72%</div>
+        <div class="percent-chip">
+          <span class="icon">❄️</span>
+          <span id="chipText">Almost three-quarters of the way!</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="line-section">
+      <div class="line-track">
+        <div class="line-fill" id="lineFill"></div>
+        <div class="line-dot" id="lineDot"></div>
+      </div>
+      <div class="line-labels">
+        <span>0</span>
+        <span>Goal: <span id="goalLabel">870</span></span>
+      </div>
+    </div>
+
+    <div class="last-updated" id="lastUpdated">Last updated: —</div>
+
+    <!-- Hidden inputs so you can still update programmatically if needed -->
+    <div class="hidden-inputs">
+      <input type="number" id="current" value="627">
+      <input type="number" id="goal" value="870">
+    </div>
+  </div>
+
+  <script>
+    const currentInput   = document.getElementById("current");
+    const goalInput      = document.getElementById("goal");
+    const totalDisplay   = document.getElementById("totalDisplay");
+    const percentDisplay = document.getElementById("percentDisplay");
+    const goalLabel      = document.getElementById("goalLabel");
+    const lineFill       = document.getElementById("lineFill");
+    const lineDot        = document.getElementById("lineDot");
+    const chipText       = document.getElementById("chipText");
+    const snowLayer      = document.getElementById("snow-layer");
+    const lastUpdatedEl  = document.getElementById("lastUpdated");
+    const santaSleigh    = document.getElementById("santa-sleigh");
+
+    let snowIntensity = 0; // 0–1 based on progress
+    let lastUpdatedMs = null;
+
+    const STORAGE_KEYS = {
+      current: "winterGoalCurrent",
+      goal: "winterGoalGoal",
+      lastUpdated: "winterGoalLastUpdated"
+    };
+
+    function loadFromStorage() {
+      try {
+        const savedCurrent = localStorage.getItem(STORAGE_KEYS.current);
+        const savedGoal    = localStorage.getItem(STORAGE_KEYS.goal);
+        const savedLast    = localStorage.getItem(STORAGE_KEYS.lastUpdated);
+
+        if (savedCurrent !== null && !isNaN(parseFloat(savedCurrent))) {
+          currentInput.value = parseFloat(savedCurrent);
+        }
+        if (savedGoal !== null && !isNaN(parseFloat(savedGoal))) {
+          goalInput.value = parseFloat(savedGoal);
+        }
+        if (savedLast !== null && !isNaN(parseInt(savedLast, 10))) {
+          lastUpdatedMs = parseInt(savedLast, 10);
+        }
+      } catch (e) {
+        // If storage is blocked, ignore and fall back to defaults
+      }
+    }
+
+    function saveToStorage(current, goal, lastUpdatedMs) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.current, String(current));
+        localStorage.setItem(STORAGE_KEYS.goal, String(goal));
+        if (lastUpdatedMs != null) {
+          localStorage.setItem(STORAGE_KEYS.lastUpdated, String(lastUpdatedMs));
+        }
+      } catch (e) {
+        // Storage may be unavailable (private mode, etc.) – ignore
+      }
+    }
+
+    function updateLastUpdatedDisplay() {
+      if (!lastUpdatedEl) return;
+
+      if (!lastUpdatedMs) {
+        lastUpdatedEl.textContent = "Last updated: —";
+        return;
+      }
+
+      const d = new Date(lastUpdatedMs);
+      const formatted = d.toLocaleString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+
+      lastUpdatedEl.textContent = "Last updated: " + formatted;
+    }
+
+    function recalcAndRender(skipTimestampUpdate = false) {
+      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
+      const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
+
+      const ratio   = Math.min(current / goal, 1);
+      const percent = Math.round(ratio * 100);
+
+      // Update visuals
+      totalDisplay.textContent   = current.toLocaleString();
+      percentDisplay.textContent = percent + "%";
+      goalLabel.textContent      = goal.toLocaleString();
+
+      const widthPercent = ratio * 100;
+      lineFill.style.width = widthPercent + "%";
+      lineDot.style.left   = widthPercent + "%";
+
+      // Fun message based on progress
+      if (percent < 25) {
+        chipText.textContent = "Just getting started—fresh snow!";
+      } else if (percent < 50) {
+        chipText.textContent = "Building the base of the snowman!";
+      } else if (percent < 75) {
+        chipText.textContent = "Almost three-quarters of the way!";
+      } else if (percent < 100) {
+        chipText.textContent = "So close—hot cocoa is ready!";
+      } else {
+        chipText.textContent = "Goal reached! Time for a snow day 🎉";
+      }
+
+      // Update snow intensity (0–1)
+      snowIntensity = ratio;
+
+      // Timestamp & storage
+      if (!skipTimestampUpdate) {
+        lastUpdatedMs = Date.now();
+      }
+
+      updateLastUpdatedDisplay();
+      saveToStorage(current, goal, lastUpdatedMs);
+    }
+
+    // Public function still usable from outside / programmatically
+    window.updateGoalProgress = function(currentValue, goalValue) {
+      if (typeof currentValue !== "undefined") {
+        currentInput.value = currentValue;
+      }
+      if (typeof goalValue !== "undefined") {
+        goalInput.value = goalValue;
+      }
+      recalcAndRender(false);
+    };
+
+    // Keyboard controls for adjusting total customers
+    // ArrowUp   = +1
+    // ArrowDown = -1
+    // PageUp    = +10
+    // PageDown  = -10
+    // + or =    = +5
+    // - or _    = -5
+    window.addEventListener("keydown", function (e) {
+      const activeTag = document.activeElement.tagName;
+      if (activeTag === "INPUT" || activeTag === "TEXTAREA") return;
+
+      let delta = 0;
+
+      switch (e.key) {
+        case "ArrowUp":
+          delta = 1;
+          break;
+        case "ArrowDown":
+          delta = -1;
+          break;
+        case "PageUp":
+          delta = 10;
+          break;
+        case "PageDown":
+          delta = -10;
+          break;
+        case "+":
+        case "=":
+          delta = 5;
+          break;
+        case "-":
+        case "_":
+          delta = -5;
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+
+      const current = Math.max(parseFloat(currentInput.value) || 0, 0);
+      const next = Math.max(current + delta, 0);
+
+      currentInput.value = next;
+      recalcAndRender(false);
+    });
+
+    // Dynamic snow: more progress = more snow, faster & slightly larger
+    function spawnSnowflake() {
+      const flake = document.createElement("div");
+      flake.className = "snowflake";
+
+      const chars = ["❄️", "❅", "❆"];
+      flake.textContent = chars[Math.floor(Math.random() * chars.length)];
+
+      const intensity = Math.max(0.05, snowIntensity); // avoid 0
+      const minDuration = 3;  // seconds
+      const maxDuration = 10; // seconds
+      const duration = maxDuration - intensity * (maxDuration - minDuration);
+
+      const minSize = 10;
+      const maxSize = 26;
+      const size = minSize + intensity * (maxSize - minSize);
+
+      const left = Math.random() * 100; // vw
+      const delayJitter = Math.random() * 0.5; // small stagger
+
+      flake.style.left = left + "vw";
+      flake.style.fontSize = size + "px";
+      flake.style.animationDuration = duration + "s";
+      flake.style.animationDelay = delayJitter + "s";
+
+      snowLayer.appendChild(flake);
+
+      setTimeout(() => {
+        flake.remove();
+      }, (duration + delayJitter + 1) * 1000);
+
+      const maxInterval = 900; // ms
+      const minInterval = 120; // ms
+      const nextDelay = maxInterval - intensity * (maxInterval - minInterval);
+
+      setTimeout(spawnSnowflake, nextDelay);
+    }
+
+    // Santa sleigh flight every few minutes
+    function triggerSleighFlight() {
+      if (!santaSleigh) return;
+
+      // Random vertical position between 8vh and 28vh for whimsy
+      const topVh = 8 + Math.random() * 20;
+      santaSleigh.style.top = topVh + "vh";
+
+      santaSleigh.style.animation = "none";
+      // Force reflow so the animation can restart
+      void santaSleigh.offsetWidth;
+      santaSleigh.style.animation = "sleighFlight 14s linear";
+    }
+
+    function scheduleSleighFlight() {
+      const minMinutes = 2;
+      const maxMinutes = 5;
+      const base = minMinutes * 60_000;
+      const extra = (maxMinutes - minMinutes) * 60_000 * Math.random();
+      const delay = base + extra;
+
+      setTimeout(() => {
+        triggerSleighFlight();
+        scheduleSleighFlight();
+      }, delay);
+    }
+
+    // Initialize from storage, then start everything
+    loadFromStorage();
+    // First render: don't treat as "updated now" – respect stored timestamp
+    recalcAndRender(true);
+    spawnSnowflake();
+
+    // Start Santa schedule and one early flight for fun
+    setTimeout(triggerSleighFlight, 2000);
+    scheduleSleighFlight();
+  </script>
+</body>
 </html>
+
