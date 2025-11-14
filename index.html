@@ -401,7 +401,125 @@
       display: none;
     }
 
-   
+    /* SANTA FLY-BY */
+    #santa-flyby {
+      position: fixed;
+      top: 12vh;
+      left: -700px;
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0;
+    }
+
+    #santa-flyby .formation {
+      position: relative;
+    }
+
+    #santa-flyby .sleigh-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    #santa-flyby.direction-ltr .sleigh-wrapper {
+      flex-direction: row;
+    }
+
+    #santa-flyby.direction-rtl .sleigh-wrapper {
+      flex-direction: row-reverse;
+    }
+
+    .reindeer-team {
+      display: flex;
+      gap: 10px;
+    }
+
+    .reindeer-team svg.reindeer {
+      height: 56px;
+      animation: rGallop 0.45s ease-in-out infinite alternate;
+      fill: #020816;
+    }
+
+    .reindeer-team .reindeer:nth-child(1),
+    .reindeer-team .reindeer:nth-child(2) {
+      transform: translateY(-12px);
+    }
+    .reindeer-team .reindeer:nth-child(3),
+    .reindeer-team .reindeer:nth-child(4) {
+      transform: translateY(-6px);
+    }
+    .reindeer-team .reindeer:nth-child(5),
+    .reindeer-team .reindeer:nth-child(6) {
+      transform: translateY(-1px);
+    }
+    .reindeer-team .reindeer:nth-child(7),
+    .reindeer-team .reindeer:nth-child(8) {
+      transform: translateY(5px);
+    }
+    .reindeer-team .reindeer:nth-child(9) {
+      transform: translateY(2px);
+    }
+
+    .santa-sleigh {
+      height: 90px;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.45));
+    }
+
+    @keyframes rGallop {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-6px); }
+    }
+
+    #santa-flyby.direction-ltr.fly {
+      opacity: 1;
+      animation: flyby-ltr 13s linear forwards;
+    }
+
+    #santa-flyby.direction-rtl.fly {
+      opacity: 1;
+      animation: flyby-rtl 13s linear forwards;
+    }
+
+    @keyframes flyby-ltr {
+      0%   { transform: translateX(-130vw) translateY(0vh); opacity:0; }
+      10%  { opacity:1; }
+      50%  { transform: translateX(0vw) translateY(-8vh); }
+      90%  { opacity:1; }
+      100% { transform: translateX(120vw) translateY(0vh); opacity:0; }
+    }
+
+    @keyframes flyby-rtl {
+      0%   { transform: translateX(120vw) translateY(0vh); opacity:0; }
+      10%  { opacity:1; }
+      50%  { transform: translateX(0vw) translateY(-8vh); }
+      90%  { opacity:1; }
+      100% { transform: translateX(-130vw) translateY(0vh); opacity:0; }
+    }
+
+    .sparkle-container {
+      position: absolute;
+      inset: 0;
+      overflow: visible;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 8px rgba(255,255,255,0.9);
+      opacity: 0;
+      animation: sparkleFade 1.1s ease-out forwards;
+    }
+
+    @keyframes sparkleFade {
+      0%   { transform: scale(0.4); opacity:0; }
+      20%  { opacity:1; }
+      100% { transform: translate(-40px, -20px) scale(1); opacity:0; }
+    }
+
+    @media (max-width: 540px) {
       .tracker-card {
         padding: 24px 18px;
       }
@@ -765,62 +883,27 @@
     spawnSnowflake();
     initStars(80);
   </script>
-<!-- Classical Christmas music: Dance of the Sugar Plum Fairy -->
-<audio id="christmasMusic" autoplay loop playsinline>
-  <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Dance%20of%20the%20Sugar%20Plum%20Fairy.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
+<button id="autoPlayButton" style="display:none"></button>
+
+<audio id="christmasMusic" loop>
+  <source src="https://cdn.musopen.org/media/audio/2017/10/04/tchaikovsky-nutcracker-dance-of-the-sugar-plum-fairy.mp3" type="audio/mpeg">
 </audio>
 
 <script>
   const music = document.getElementById("christmasMusic");
+  const btn = document.getElementById("autoPlayButton");
 
-  function fadeIn(targetVolume = 0.5, step = 0.02, intervalMs = 150) {
-    let v = 0;
-    music.volume = 0;
-    const fade = setInterval(() => {
-      v += step;
-      if (v >= targetVolume) {
-        v = targetVolume;
-        clearInterval(fade);
-      }
-      music.volume = v;
-    }, intervalMs);
-  }
+  // Clicking the button triggers audio legally
+  btn.addEventListener("click", () => {
+    music.volume = 0.55;
+    music.play().catch(e => console.log("Autoplay blocked:", e));
+  });
 
-  function setUpInteractionFallback() {
-    const handler = () => {
-      music.play().then(() => {
-        fadeIn();
-      }).catch(err => {
-        console.log("Playback still blocked after interaction:", err);
-      });
-
-      window.removeEventListener("click", handler);
-      window.removeEventListener("keydown", handler);
-      window.removeEventListener("mousemove", handler);
-      window.removeEventListener("touchstart", handler);
-    };
-
-    window.addEventListener("click", handler);
-    window.addEventListener("keydown", handler);
-    window.addEventListener("mousemove", handler);
-    window.addEventListener("touchstart", handler);
-  }
-
-  async function initMusic() {
-    try {
-      // Try to autoplay (muted at first)
-      music.volume = 0;
-      await music.play();
-      // If that works, fade in
-      fadeIn();
-    } catch (err) {
-      console.log("Autoplay blocked, will start on first interaction:", err);
-      setUpInteractionFallback();
-    }
-  }
-
-  window.addEventListener("load", initMusic);
+  // Try to click it automatically as soon as page loads
+  window.addEventListener("DOMContentLoaded", () => {
+    btn.click();
+  });
 </script>
+
 </body>
 </html>
