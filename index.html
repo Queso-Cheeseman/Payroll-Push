@@ -494,5 +494,164 @@
     updateLine();
     spawnSnowflake();
   </script>
+  <!-- Santa fly-by animation -->
+<div id="santa-sleigh">
+  <div class="sleigh-body">
+    <!-- Reindeer (repeated) -->
+    <svg class="reindeer" viewBox="0 0 80 40">
+      <path d="M10 30 L25 25 L40 30 L55 28 L65 20 L55 10 L40 15 L25 10 L10 12 Z" fill="#a46c32"/>
+      <circle cx="65" cy="20" r="3" fill="#000"/>
+      <circle cx="68" cy="18" r="2" fill="red"/>
+    </svg>
+
+    <svg class="reindeer" viewBox="0 0 80 40">
+      <path d="M10 30 L25 25 L40 30 L55 28 L65 20 L55 10 L40 15 L25 10 L10 12 Z" fill="#a46c32"/>
+      <circle cx="65" cy="20" r="3" fill="#000"/>
+      <circle cx="68" cy="18" r="2" fill="red"/>
+    </svg>
+
+    <svg class="reindeer" viewBox="0 0 80 40">
+      <path d="M10 30 L25 25 L40 30 L55 28 L65 20 L55 10 L40 15 L25 10 L10 12 Z" fill="#a46c32"/>
+      <circle cx="65" cy="20" r="3" fill="#000"/>
+      <circle cx="68" cy="18" r="2" fill="red"/>
+    </svg>
+
+    <svg class="reindeer" viewBox="0 0 80 40">
+      <path d="M10 30 L25 25 L40 30 L55 28 L65 20 L55 10 L40 15 L25 10 L10 12 Z" fill="#a46c32"/>
+      <circle cx="65" cy="20" r="3" fill="#000"/>
+      <circle cx="68" cy="18" r="2" fill="red"/>
+    </svg>
+
+    <!-- Santa in Sleigh -->
+    <svg class="santa" viewBox="0 0 120 60">
+      <!-- Sleigh -->
+      <path d="M10 40 Q40 55 80 40 L110 40 Q90 58 60 52 Q30 58 10 40 Z" fill="#b30000"/>
+      <!-- Santa body -->
+      <circle cx="60" cy="28" r="12" fill="#ff0000"/>
+      <!-- Santa head -->
+      <circle cx="60" cy="15" r="8" fill="#ffe0bd"/>
+      <!-- Hat -->
+      <path d="M52 10 L68 10 L60 2 Z" fill="red"/>
+      <circle cx="60" cy="2" r="3" fill="white"/>
+      <circle cx="52" cy="10" r="3" fill="white"/>
+      <circle cx="68" cy="10" r="3" fill="white"/>
+    </svg>
+  </div>
+
+  <div class="sleigh-trail">❄ ✨ ❄ ✨ ❄</div>
+</div>
+
+<style>
+  #santa-sleigh {
+    position: fixed;
+    top: 12vh;
+    left: -500px;
+    pointer-events: none;
+    z-index: 9999;
+    font-size: 22px;
+    opacity: 0;
+  }
+
+  .sleigh-body {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  svg.reindeer,
+  svg.santa {
+    height: 40px;
+  }
+
+  svg.reindeer {
+    animation: reindeer-bob 0.4s ease-in-out infinite alternate;
+  }
+
+  /* stagger gallop */
+  svg.reindeer:nth-child(1) { animation-delay: 0s; }
+  svg.reindeer:nth-child(2) { animation-delay: 0.08s; }
+  svg.reindeer:nth-child(3) { animation-delay: 0.16s; }
+  svg.reindeer:nth-child(4) { animation-delay: 0.24s; }
+
+  .sleigh-trail {
+    margin-top: 4px;
+    text-align: right;
+    font-size: 18px;
+    opacity: 0.7;
+    animation: trail-twinkle 0.8s ease-in-out infinite alternate;
+  }
+
+  /* flight class */
+  #santa-sleigh.fly {
+    opacity: 1;
+    animation: santa-flight 12s linear forwards;
+  }
+
+  /* curved flight path */
+  @keyframes santa-flight {
+    0% {
+      transform: translateX(120vw) translateY(12vh) scale(0.9);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    30% {
+      transform: translateX(60vw) translateY(2vh) scale(1.05);
+    }
+    60% {
+      transform: translateX(0vw) translateY(-10vh) scale(1.1);
+    }
+    90% {
+      transform: translateX(-60vw) translateY(-4vh) scale(1.05);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-120vw) translateY(0vh) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes reindeer-bob {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-5px); }
+  }
+
+  @keyframes trail-twinkle {
+    from { transform: translateX(0); opacity: 0.4; }
+    to   { transform: translateX(-8px); opacity: 1; }
+  }
+</style>
+
+<script>
+(function () {
+  const sleigh = document.getElementById('santa-sleigh');
+
+  function randomInterval(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  function launchSanta() {
+    sleigh.classList.add('fly');
+
+    function end() {
+      sleigh.classList.remove('fly');
+      sleigh.removeEventListener('animationend', end);
+
+      const nextIn = randomInterval(20000, 90000);
+      setTimeout(launchSanta, nextIn);
+    }
+
+    sleigh.addEventListener('animationend', end);
+  }
+
+  setTimeout(() => launchSanta(), randomInterval(3000, 9000));
+})();
+</script>
 </body>
 </html>
