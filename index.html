@@ -896,54 +896,35 @@ function updateLine() {
     initStars(80);
   </script>
 
-<audio id="christmasMusic" loop>
+<audio id="christmasMusic" preload="auto" loop>
   <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
+  <audio controls style="position:fixed;bottom:20px;right:20px;z-index:9999;">
+  <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
+</audio>
+
 
 <script>
   const music = document.getElementById("christmasMusic");
+  music.volume = 0.5;
 
-  function startMusic() {
-    music.volume = 0.5;
+  function startMusicOnce() {
     music.play().catch(err => {
-      console.log("Playback blocked:", err);
+      console.log("Still blocked:", err);
     });
+
+    // remove listeners so this only runs once
+    window.removeEventListener("click", startMusicOnce);
+    window.removeEventListener("keydown", startMusicOnce);
+    window.removeEventListener("touchstart", startMusicOnce);
   }
 
-  // Try autoplay on load
-  window.addEventListener("load", () => {
-    music.volume = 0.0; // start silent
-    music.play().then(() => {
-      // fade in a bit
-      let v = 0;
-      const target = 0.5;
-      const step = 0.04;
-      const timer = setInterval(() => {
-        v += step;
-        if (v >= target) {
-          v = target;
-          clearInterval(timer);
-        }
-        music.volume = v;
-      }, 150);
-    }).catch(() => {
-      // If autoplay blocked, start on first user interaction
-      const handler = () => {
-        startMusic();
-        window.removeEventListener("click", handler);
-        window.removeEventListener("keydown", handler);
-        window.removeEventListener("mousemove", handler);
-        window.removeEventListener("touchstart", handler);
-      };
-      window.addEventListener("click", handler);
-      window.addEventListener("keydown", handler);
-      window.addEventListener("mousemove", handler);
-      window.addEventListener("touchstart", handler);
-    });
-  });
+  // Start music on first interaction (feels like autoplay)
+  window.addEventListener("click", startMusicOnce);
+  window.addEventListener("keydown", startMusicOnce);
+  window.addEventListener("touchstart", startMusicOnce);
 </script>
-
 
 </body>
 </html>
