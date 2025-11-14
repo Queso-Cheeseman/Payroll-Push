@@ -895,15 +895,11 @@ function updateLine() {
     spawnSnowflake();
     initStars(80);
   </script>
-
+  
 <audio id="christmasMusic" preload="auto" loop>
   <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
-  <audio controls style="position:fixed;bottom:20px;right:20px;z-index:9999;">
-  <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
-</audio>
-
 
 <script>
   const music = document.getElementById("christmasMusic");
@@ -914,17 +910,18 @@ function updateLine() {
       console.log("Still blocked:", err);
     });
 
-    // remove listeners so this only runs once
+    // Only run once
     window.removeEventListener("click", startMusicOnce);
     window.removeEventListener("keydown", startMusicOnce);
     window.removeEventListener("touchstart", startMusicOnce);
   }
 
-  // Start music on first interaction (feels like autoplay)
+  // Start the music on first real interaction
   window.addEventListener("click", startMusicOnce);
   window.addEventListener("keydown", startMusicOnce);
   window.addEventListener("touchstart", startMusicOnce);
 </script>
+
 
 </body>
 </html>
