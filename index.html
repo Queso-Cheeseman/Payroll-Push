@@ -137,21 +137,30 @@
     /* MAIN TRACKER CARD – frosted + 3D */
 .tracker-card {
   position: relative;
-}
+  padding: 32px 40px;
+  border-radius: 24px;
 
+  /* Softer, more translucent glass */
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(248, 250, 252, 0.68)
+  );
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border: 1px solid rgba(148, 163, 184, 0.55);
+
+  box-shadow:
+    0 26px 60px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.85);
+
+  width: min(900px, 90vw);
+  z-index: 2;
+}
 .tracker-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: rgba(255, 255, 255, 0.15); /* a faint frosting layer */
-  pointer-events: none;
-  z-index: 0;
-}
-
-.tracker-card * {
-  position: relative;
-  z-index: 1;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent 65%);
+  opacity: 0.6;
 }
 
     /* subtle top highlight to enhance 3D, but STATIC (no white animation) */
