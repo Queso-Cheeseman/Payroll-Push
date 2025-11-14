@@ -775,14 +775,14 @@
       direction = (direction === 'ltr') ? 'rtl' : 'ltr';
 
       // Schedule next fly-by
-      const nextIn = random(20000, 90000);
+      const nextIn = random(10000, 20000);
       setTimeout(launchSanta, nextIn);
     }
 
     root.addEventListener('animationend', handleEnd);
   }
 
-  const firstIn = random(3000, 9000);
+  const firstIn = random(10000, 20000);
   setTimeout(launchSanta, firstIn);
 })();
 </script>
