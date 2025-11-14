@@ -155,28 +155,30 @@
     }
 
     /* Main card */
-  .tracker-card {
+.tracker-card {
   position: relative;
   padding: 32px 40px;
   border-radius: 24px;
 
-  /* NEW: very gentle, almost-solid gradient to avoid visible bands */
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.98) 0%,
-    rgba(15, 23, 42, 0.97) 50%,
-    rgba(15, 23, 42, 0.96) 100%
-  );
+  /* NEW: frosted white glass panel */
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
 
   box-shadow:
-    0 24px 60px rgba(0,0,0,0.7),
-    0 0 0 1px rgba(255,255,255,0.08);
-  backdrop-filter: blur(20px);
+    0 20px 60px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(255,255,255,0.15);
+
   width: min(900px, 90vw);
-  z-index: 2;
-  animation: cardFloat 16s ease-in-out infinite alternate;
-  overflow: hidden;
+  z-index: 5;
 }
+.tracker-card,
+.tracker-card * {
+  color: #0d1a2d; /* deep desaturated navy for high contrast */
+}
+
 
   .tracker-card::before {
   content: "";
@@ -203,16 +205,14 @@
 
 
     .tracker-card::after {
-      content: "";
-      position: absolute;
-      left: -10%;
-      right: -10%;
-      bottom: -40px;
-      height: 80px;
-      background: radial-gradient(circle at 50% 0, rgba(255,255,255,0.85), transparent 70%);
-      opacity: 0.5;
-      pointer-events: none;
-    }
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent 60%);
+  pointer-events: none;
+}
+
 
     @keyframes cardFloat {
       0%   { transform: translateY(0px); }
@@ -260,22 +260,16 @@
     }
 
     /* Winter-themed badge */
-    .badge {
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: linear-gradient(120deg, #e0f2fe, #7dd3fc, #38bdf8, #0ea5e9);
-      color: #082f49;
-      font-weight: 700;
-      box-shadow: 0 0 18px rgba(191, 219, 254, 0.9);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-    }
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+  color: #0d1a2d;
+  font-weight: 700;
+  box-shadow: none;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
 
     .badge::after {
       content: "";
@@ -325,23 +319,14 @@
     }
 
     .percent-value {
-      font-size: 28px;
-      font-weight: 700;
-    }
+  color: #0d1a2d;
+}
 
-    .percent-chip {
-      margin-top: 4px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: rgba(9, 148, 255, 0.28);
-      border: 1px solid rgba(181, 227, 255, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
+.percent-chip {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0,0,0,0.15);
+  color: #0d1a2d;
+}
 
     .percent-chip span.icon {
       font-size: 16px;
@@ -409,13 +394,11 @@
       border: 1px solid rgba(255,255,255,0.7);
     }
 
-    .line-labels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.85;
+    .line-labels span {
+      color: #0d1a2d;
+      opacity: 0.75;
     }
+
 
     .hidden-inputs {
       display: none;
@@ -544,8 +527,14 @@
         padding: 24px 18px;
       }
       .current-total {
-        font-size: 44px;
-      }
+  color: #0d1a2d;
+  text-shadow: none; /* remove glowing text */
+}
+.current-label {
+  color: #0d1a2d;
+  opacity: 0.65;
+}
+
       .tracker-header {
         flex-direction: column;
         align-items: flex-start;
