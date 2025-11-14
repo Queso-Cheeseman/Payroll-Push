@@ -335,13 +335,13 @@
     .line-track {
       position: relative;
       width: 100%;
-      height: 14px;
+      height: 28px; /* bigger bar */
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(148,163,184,0.25), rgba(209,213,219,0.3));
+      background: linear-gradient(90deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
       overflow: hidden;
       box-shadow:
-        inset 0 0 3px rgba(148, 163, 184, 0.9),
-        0 2px 4px rgba(15, 23, 42, 0.15);
+        inset 0 0 8px rgba(0,0,0,0.25),
+        0 0 12px rgba(0,0,0,0.15);
     }
 
     .line-fill {
@@ -378,13 +378,12 @@
 /* snowflake icon as the marker */
 .line-dot::before {
   content: "❄";
-  font-size: 20px;
-  line-height: 1;
-  color: #0f172a; /* or white if you prefer */
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.9),
-    0 0 10px rgba(56,189,248,0.8);
+  font-size: 26px;   /* larger snowflake */
+  color: #0f172a;
+  text-shadow: 0 0 8px rgba(255,255,255,0.9),
+               0 0 14px rgba(56,189,248,0.8);
 }
+
 
     .line-labels {
       display: flex;
@@ -715,16 +714,24 @@
         localStorage.setItem(STORAGE_KEYS.goal, String(goal));
       } catch (e) {}
     }
-
+const base = 614;  // your true starting point
     function updateLine() {
       const current = Math.max(parseFloat(currentInput.value) || 0, 0);
       const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
 
-      const ratio   = Math.min(current / goal, 1);
+       const base = 614;  // starting point
+    const currentVal = current;
+    const goalVal = goal;
+    
+    const ratio = Math.min(
+      (currentVal - base) / (goalVal - base),
+      1
+    );
       const percent = Math.round(ratio * 100);
 
       totalDisplay.textContent   = current.toLocaleString();
-      percentDisplay.textContent = percent + "%";
+    const percent = Math.round(ratio * 100);
+percentDisplay.textContent = percent + "%";
       goalLabel.textContent      = goal.toLocaleString();
 
       const widthPercent = ratio * 100;
