@@ -193,6 +193,10 @@
       margin-bottom: 24px;
       position: relative;
       z-index: 1;
+<button id="musicToggle" class="music-btn" type="button" aria-pressed="false">
+  ▶ Music
+</button>
+
     }
 
     .title-block {
@@ -696,39 +700,54 @@
   </script>
 
   <!-- Music -->
-  <audio id="christmasMusic" preload="auto" loop>
-    <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+<audio id="christmasMusic" preload="none" loop controls style="display:none;">
+  <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
 
   <script>
-    const music = document.getElementById("christmasMusic");
-    const musicToggle = document.getElementById("musicToggle");
+  const music = document.getElementById("christmasMusic");
+  const musicToggle = document.getElementById("musicToggle");
+
+  if (music) {
     music.volume = 0.5;
+  }
 
-    let musicEnabled = false;
+  let isPlaying = false;
 
-    async function toggleMusic() {
-      if (!musicEnabled) {
-        try {
-          await music.play();
-          musicEnabled = true;
-          musicToggle.textContent = "⏸ Music";
-          musicToggle.setAttribute("aria-pressed", "true");
-        } catch (err) {
-          console.log("Audio play blocked:", err);
-          alert("Your browser blocked the audio. Please allow sound for this site in your browser settings.");
-        }
-      } else {
-        music.pause();
-        musicEnabled = false;
-        musicToggle.textContent = "▶ Music";
-        musicToggle.setAttribute("aria-pressed", "false");
+  async function toggleMusic() {
+    if (!music) return;
+
+    if (!isPlaying) {
+      try {
+        // Directly triggered by the button click – satisfies Chrome's autoplay policy
+        await music.play();
+        isPlaying = true;
+        musicToggle.textContent = "⏸ Music";
+        musicToggle.setAttribute("aria-pressed", "true");
+      } catch (err) {
+        console.error("Audio play blocked:", err);
+        alert(
+          "Chrome blocked the audio. Please check:\n\n" +
+          "• The tab isn't muted\n" +
+          "• Chrome site settings → Sound is allowed for this page\n\n" +
+          "You can also temporarily remove style=\"display:none;\" from the <audio> tag to see its native controls."
+        );
       }
+    } else {
+      music.pause();
+      isPlaying = false;
+      musicToggle.textContent = "▶ Music";
+      musicToggle.setAttribute("aria-pressed", "false");
     }
+  }
 
+  if (musicToggle) {
     musicToggle.addEventListener("click", toggleMusic);
-  </script>
+  }
+</script>
+
 
 </body>
 </html>
