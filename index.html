@@ -665,45 +665,44 @@
 
   <!-- Music: local file in your repo, autoplayed without visible controls -->
   <!-- Adjust the src path to wherever you store the MP3 in your repo -->
-  <audio id="christmasMusic" preload="auto" loop muted>
-    <source src="./main/Dance_of_the_Sugar_Plum_Fairy_(ISRC_USUAN1100625).mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+ <!-- Music: autoplayed from your GitHub repository -->
+<audio id="christmasMusic" preload="auto" loop muted>
+  <source src="./Payroll-Push/Dance_of_the_Sugar_Plum_Fairy_(ISRC_USUAN1100625).mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
-  <script>
-    const music = document.getElementById("christmasMusic");
+<script>
+  const music = document.getElementById("christmasMusic");
 
-    async function safeAutoplay() {
-      if (!music) return;
+  async function safeAutoplay() {
+    try {
+      // Start muted so Chrome allows autoplay
+      await music.play();
 
-      try {
-        // Start playback while muted (satisfies most autoplay policies)
-        await music.play();
+      // Fade-in after short delay
+      setTimeout(() => {
+        let vol = 0;
+        music.muted = false;
 
-        // Fade in volume shortly after starting
-        setTimeout(() => {
-          let vol = 0;
-          music.muted = false;
-
-          const fade = setInterval(() => {
-            vol += 0.02;
-            if (vol >= 0.5) {
-              music.volume = 0.5;
-              clearInterval(fade);
-            } else {
-              music.volume = vol;
-            }
-          }, 80);
-        }, 300);
-      } catch (err) {
-        console.warn("Autoplay was blocked by the browser:", err);
-        // If blocked, there's no visible button on purpose.
-        // Users would need to enable sound for the site in browser settings.
-      }
+        const fade = setInterval(() => {
+          vol += 0.02;
+          if (vol >= 0.5) {
+            music.volume = 0.5;
+            clearInterval(fade);
+          } else {
+            music.volume = vol;
+          }
+        }, 80);
+      }, 350);
+    } catch (err) {
+      console.warn("Autoplay blocked:", err);
+      // No button requested, so we fail silently per your instructions
     }
+  }
 
-    safeAutoplay();
-  </script>
+  safeAutoplay();
+</script>
+
 
 </body>
 </html>
