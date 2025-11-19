@@ -238,36 +238,11 @@
       white-space: nowrap;
     }
 
-    /* NEW: Header right container for badge + music button */
+    /* Header right container for badge */
     .header-right {
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    /* NEW: Music toggle button */
-    .music-btn {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(255,255,255,0.9);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      cursor: pointer;
-      box-shadow:
-        0 4px 10px rgba(15, 23, 42, 0.18),
-        0 0 0 1px rgba(255,255,255,0.7);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .music-btn:active {
-      transform: translateY(1px);
-      box-shadow:
-        0 2px 6px rgba(15, 23, 42, 0.3),
-        0 0 0 1px rgba(148, 163, 184, 0.7);
     }
 
     /* METRICS */
@@ -451,14 +426,10 @@
         </div>
       </div>
 
-      <!-- NEW: badge + music button -->
       <div class="header-right">
         <div class="badge">
           ❄ Snow Day Progress
         </div>
-        <button id="musicToggle" class="music-btn" type="button" aria-pressed="false">
-          ▶ Music
-        </button>
       </div>
     </div>
 
@@ -507,13 +478,12 @@
 
     let snowIntensity = 0;
 
-    /* NEW: shared storage via backend + localStorage fallback */
     const STORAGE_KEYS = {
       current: "winterGoalCurrent",
       goal: "winterGoalGoal"
     };
 
-    // TODO: replace with your real backend URL
+    // Replace with your real backend URL when ready
     const API_URL = "https://your-backend.example.com/api/payroll-progress";
 
     function loadFromLocalStorage() {
@@ -567,7 +537,6 @@
       }
     }
 
-    // Baseline for the progress bar
     const BASE = 614;  // starting point
 
     function updateLine() {
@@ -686,7 +655,6 @@
       }
     }
 
-    // INITIAL LOAD: try server first, then update visuals.
     (async function init() {
       await loadFromServer();
       updateLine();
@@ -695,39 +663,46 @@
     })();
   </script>
 
-  <!-- Music -->
-  <audio id="christmasMusic" preload="auto" loop>
-    <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
+  <!-- Music: local file in your repo, autoplayed without visible controls -->
+  <!-- Adjust the src path to wherever you store the MP3 in your repo -->
+  <audio id="christmasMusic" preload="auto" loop muted>
+    <source src="./main/Dance_of_the_Sugar_Plum_Fairy_(ISRC_USUAN1100625).mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
   <script>
     const music = document.getElementById("christmasMusic");
-    const musicToggle = document.getElementById("musicToggle");
-    music.volume = 0.5;
 
-    let musicEnabled = false;
+    async function safeAutoplay() {
+      if (!music) return;
 
-    async function toggleMusic() {
-      if (!musicEnabled) {
-        try {
-          await music.play();
-          musicEnabled = true;
-          musicToggle.textContent = "⏸ Music";
-          musicToggle.setAttribute("aria-pressed", "true");
-        } catch (err) {
-          console.log("Audio play blocked:", err);
-          alert("Your browser blocked the audio. Please allow sound for this site in your browser settings.");
-        }
-      } else {
-        music.pause();
-        musicEnabled = false;
-        musicToggle.textContent = "▶ Music";
-        musicToggle.setAttribute("aria-pressed", "false");
+      try {
+        // Start playback while muted (satisfies most autoplay policies)
+        await music.play();
+
+        // Fade in volume shortly after starting
+        setTimeout(() => {
+          let vol = 0;
+          music.muted = false;
+
+          const fade = setInterval(() => {
+            vol += 0.02;
+            if (vol >= 0.5) {
+              music.volume = 0.5;
+              clearInterval(fade);
+            } else {
+              music.volume = vol;
+            }
+          }, 80);
+        }, 300);
+      } catch (err) {
+        console.warn("Autoplay was blocked by the browser:", err);
+        // If blocked, there's no visible button on purpose.
+        // Users would need to enable sound for the site in browser settings.
       }
     }
 
-    musicToggle.addEventListener("click", toggleMusic);
+    safeAutoplay();
   </script>
 
 </body>
