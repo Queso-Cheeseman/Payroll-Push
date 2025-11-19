@@ -24,7 +24,7 @@
       align-items: center;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #ffffff;
-      background-color: var(--night);  /* solid dark base */
+      background-color: var(--night);
       overflow: hidden;
     }
 
@@ -54,7 +54,7 @@
       100% { opacity: 0.3; transform: scale(1); }
     }
 
-    /* Aurora / Northern lights – gentle, no harsh seams */
+    /* Aurora */
     #aurora-layer {
       position: fixed;
       inset: 0;
@@ -134,13 +134,11 @@
       }
     }
 
-    /* MAIN TRACKER CARD – frosted + 3D */
+    /* MAIN TRACKER CARD */
     .tracker-card {
       position: relative;
       padding: 32px 40px;
       border-radius: 24px;
-
-      /* Softer, more translucent glass */
       background: linear-gradient(
         145deg,
         rgba(255, 255, 255, 0.78),
@@ -148,13 +146,10 @@
       );
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
-
       border: 1px solid rgba(148, 163, 184, 0.55);
-
       box-shadow:
         0 26px 60px rgba(0, 0, 0, 0.7),
         0 1px 0 rgba(255, 255, 255, 0.85);
-
       width: min(900px, 90vw);
       z-index: 2;
     }
@@ -164,7 +159,7 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: rgba(255, 255, 255, 0.15); /* a faint frosting layer */
+      background: rgba(255, 255, 255, 0.15);
       pointer-events: none;
       z-index: 0;
     }
@@ -174,7 +169,6 @@
       z-index: 1;
     }
 
-    /* subtle top highlight to enhance 3D, but STATIC */
     .tracker-card::after {
       content: "";
       position: absolute;
@@ -185,7 +179,6 @@
       opacity: 0.85;
     }
 
-    /* make text inside card dark & readable */
     .tracker-card,
     .tracker-card * {
       color: var(--card-text);
@@ -228,7 +221,6 @@
       opacity: 0.8;
     }
 
-    /* clean winter badge */
     .badge {
       padding: 6px 14px;
       border-radius: 999px;
@@ -243,6 +235,39 @@
         0 0 0 1px rgba(148, 163, 184, 0.5);
       position: relative;
       z-index: 1;
+      white-space: nowrap;
+    }
+
+    /* NEW: Header right container for badge + music button */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* NEW: Music toggle button */
+    .music-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(255,255,255,0.9);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.18),
+        0 0 0 1px rgba(255,255,255,0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .music-btn:active {
+      transform: translateY(1px);
+      box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.3),
+        0 0 0 1px rgba(148, 163, 184, 0.7);
     }
 
     /* METRICS */
@@ -286,7 +311,6 @@
       color: var(--card-text);
     }
 
-    /* LFG chip – matches card background / glassy style */
     .percent-chip {
       margin-top: 4px;
       display: inline-flex;
@@ -295,13 +319,11 @@
       padding: 4px 12px;
       border-radius: 999px;
       font-size: 12px;
-
       background: rgba(255,255,255,0.9);
       border: 1px solid rgba(148,163,184,0.7);
       box-shadow:
         0 4px 10px rgba(15, 23, 42, 0.18),
         0 0 0 1px rgba(255,255,255,0.7);
-
       color: var(--card-text);
     }
 
@@ -329,7 +351,7 @@
     .line-track {
       position: relative;
       width: 100%;
-      height: 28px; /* bigger bar */
+      height: 28px;
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
       overflow: hidden;
@@ -350,7 +372,6 @@
       transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Progress marker: snowflake instead of white circle */
     .line-dot {
       position: absolute;
       top: 50%;
@@ -404,6 +425,9 @@
       .percent-block {
         text-align: left;
       }
+      .header-right {
+        align-self: flex-start;
+      }
     }
   </style>
 </head>
@@ -426,8 +450,15 @@
           Cozy progress toward your year-end customer goal.
         </div>
       </div>
-      <div class="badge">
-        ❄ Snow Day Progress
+
+      <!-- NEW: badge + music button -->
+      <div class="header-right">
+        <div class="badge">
+          ❄ Snow Day Progress
+        </div>
+        <button id="musicToggle" class="music-btn" type="button" aria-pressed="false">
+          ▶ Music
+        </button>
       </div>
     </div>
 
@@ -476,25 +507,64 @@
 
     let snowIntensity = 0;
 
+    /* NEW: shared storage via backend + localStorage fallback */
     const STORAGE_KEYS = {
       current: "winterGoalCurrent",
       goal: "winterGoalGoal"
     };
 
-    function loadFromStorage() {
+    // TODO: replace with your real backend URL
+    const API_URL = "https://your-backend.example.com/api/payroll-progress";
+
+    function loadFromLocalStorage() {
       try {
         const savedCurrent = localStorage.getItem(STORAGE_KEYS.current);
         const savedGoal    = localStorage.getItem(STORAGE_KEYS.goal);
         if (savedCurrent !== null) currentInput.value = parseFloat(savedCurrent);
         if (savedGoal !== null)    goalInput.value    = parseFloat(savedGoal);
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Unable to read from localStorage", e);
+      }
     }
 
-    function saveToStorage(current, goal) {
+    function saveToLocalStorage(current, goal) {
       try {
         localStorage.setItem(STORAGE_KEYS.current, String(current));
         localStorage.setItem(STORAGE_KEYS.goal, String(goal));
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Unable to write to localStorage", e);
+      }
+    }
+
+    async function loadFromServer() {
+      try {
+        const res = await fetch(API_URL, { method: "GET" });
+        if (!res.ok) throw new Error("Non-2xx response");
+        const data = await res.json();
+
+        if (typeof data.current === "number") {
+          currentInput.value = data.current;
+        }
+        if (typeof data.goal === "number") {
+          goalInput.value = data.goal;
+        }
+      } catch (err) {
+        console.warn("Falling back to localStorage (load failed)", err);
+        loadFromLocalStorage();
+      }
+    }
+
+    async function saveToServer(current, goal) {
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ current, goal })
+        });
+      } catch (err) {
+        console.warn("Server save failed, saving to localStorage instead", err);
+        saveToLocalStorage(current, goal);
+      }
     }
 
     // Baseline for the progress bar
@@ -504,11 +574,9 @@
       const current = Math.max(parseFloat(currentInput.value) || 0, 0);
       const goal    = Math.max(parseFloat(goalInput.value) || 1, 1);
 
-      // Clamp so we don't go below the base
       const currentVal = Math.max(current, BASE);
       const goalVal    = Math.max(goal, BASE + 1);
 
-      // Progress is from BASE → goal
       const ratio = Math.min(
         (currentVal - BASE) / (goalVal - BASE),
         1
@@ -516,7 +584,6 @@
 
       const percent = Math.round(ratio * 100);
 
-      // Update UI
       totalDisplay.textContent   = current.toLocaleString();
       percentDisplay.textContent = percent + "%";
       goalLabel.textContent      = goal.toLocaleString();
@@ -538,7 +605,9 @@
       }
 
       snowIntensity = ratio;
-      saveToStorage(current, goal);
+
+      // save shared state
+      saveToServer(current, goal);
     }
 
     window.updateGoalProgress = function(currentValue, goalValue) {
@@ -547,7 +616,7 @@
       updateLine();
     };
 
-    // hidden keyboard controls still work, but not shown in UI
+    // Hidden keyboard controls
     window.addEventListener("keydown", function (e) {
       const activeTag = document.activeElement.tagName;
       if (activeTag === "INPUT" || activeTag === "TEXTAREA") return;
@@ -617,13 +686,16 @@
       }
     }
 
-    loadFromStorage();
-    updateLine();
-    spawnSnowflake();
-    initStars(80);
+    // INITIAL LOAD: try server first, then update visuals.
+    (async function init() {
+      await loadFromServer();
+      updateLine();
+      spawnSnowflake();
+      initStars(80);
+    })();
   </script>
 
-  <!-- Music: Dance of the Sugar Plum Fairy -->
+  <!-- Music -->
   <audio id="christmasMusic" preload="auto" loop>
     <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
@@ -631,23 +703,31 @@
 
   <script>
     const music = document.getElementById("christmasMusic");
+    const musicToggle = document.getElementById("musicToggle");
     music.volume = 0.5;
 
-    function startMusicOnce() {
-      music.play().catch(err => {
-        console.log("Still blocked:", err);
-      });
+    let musicEnabled = false;
 
-      // Only run once
-      window.removeEventListener("click", startMusicOnce);
-      window.removeEventListener("keydown", startMusicOnce);
-      window.removeEventListener("touchstart", startMusicOnce);
+    async function toggleMusic() {
+      if (!musicEnabled) {
+        try {
+          await music.play();
+          musicEnabled = true;
+          musicToggle.textContent = "⏸ Music";
+          musicToggle.setAttribute("aria-pressed", "true");
+        } catch (err) {
+          console.log("Audio play blocked:", err);
+          alert("Your browser blocked the audio. Please allow sound for this site in your browser settings.");
+        }
+      } else {
+        music.pause();
+        musicEnabled = false;
+        musicToggle.textContent = "▶ Music";
+        musicToggle.setAttribute("aria-pressed", "false");
+      }
     }
 
-    // Start the music on first real interaction
-    window.addEventListener("click", startMusicOnce);
-    window.addEventListener("keydown", startMusicOnce);
-    window.addEventListener("touchstart", startMusicOnce);
+    musicToggle.addEventListener("click", toggleMusic);
   </script>
 
 </body>
