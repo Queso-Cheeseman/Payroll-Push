@@ -193,7 +193,6 @@
       margin-bottom: 24px;
       position: relative;
       z-index: 1;
-
     }
 
     .title-block {
@@ -239,6 +238,37 @@
       white-space: nowrap;
     }
 
+    /* NEW: Header right container for badge + music button */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* NEW: Music toggle button */
+    .music-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(255,255,255,0.9);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.18),
+        0 0 0 1px rgba(255,255,255,0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .music-btn:active {
+      transform: translateY(1px);
+      box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.3),
+        0 0 0 1px rgba(148, 163, 184, 0.7);
+    }
 
     /* METRICS */
     .main-metrics {
@@ -426,6 +456,10 @@
         <div class="badge">
           ❄ Snow Day Progress
         </div>
+        <button id="musicToggle" class="music-btn" type="button" aria-pressed="false">
+          ▶ Music
+        </button>
+      </div>
     </div>
 
     <div class="main-metrics">
@@ -662,44 +696,39 @@
   </script>
 
   <!-- Music -->
-<!-- Music: autoplay-safe version -->
-<audio id="christmasMusic" preload="auto" loop muted>
-  <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
+  <audio id="christmasMusic" preload="auto" loop>
+    <source src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Dance_of_the_Sugar_Plum_Fairy_%28ISRC_USUAN1100625%29.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
-<script>
-  const music = document.getElementById("christmasMusic");
+  <script>
+    const music = document.getElementById("christmasMusic");
+    const musicToggle = document.getElementById("musicToggle");
+    music.volume = 0.5;
 
-  async function safeAutoplay() {
-    try {
-      await music.play();
+    let musicEnabled = false;
 
-      // Fade in after autoplay
-      setTimeout(() => {
-        let vol = 0;
-        music.muted = false;
-
-        const fade = setInterval(() => {
-          vol += 0.02;
-          if (vol >= 0.5) {
-            music.volume = 0.5;
-            clearInterval(fade);
-          } else {
-            music.volume = vol;
-          }
-        }, 80);
-      }, 300);
-
-    } catch (err) {
-      console.warn("Chrome blocked autoplay. User interaction will be required.");
+    async function toggleMusic() {
+      if (!musicEnabled) {
+        try {
+          await music.play();
+          musicEnabled = true;
+          musicToggle.textContent = "⏸ Music";
+          musicToggle.setAttribute("aria-pressed", "true");
+        } catch (err) {
+          console.log("Audio play blocked:", err);
+          alert("Your browser blocked the audio. Please allow sound for this site in your browser settings.");
+        }
+      } else {
+        music.pause();
+        musicEnabled = false;
+        musicToggle.textContent = "▶ Music";
+        musicToggle.setAttribute("aria-pressed", "false");
+      }
     }
-  }
 
-  safeAutoplay();
-</script>
-
-
+    musicToggle.addEventListener("click", toggleMusic);
+  </script>
 
 </body>
 </html>
