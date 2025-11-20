@@ -463,7 +463,14 @@
       <input type="number" id="goal" value="870">
     </div>
   </div>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://cudspjkiagvqulymeszq.supabase.co";      // from Settings → API
+  const SUPABASE_ANON_KEY = "sb_secret_ZM-y6toXragbOXsYxfBIpg_KcGIpnji";        // from Settings → API
 
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+  
   <script>
     const currentInput   = document.getElementById("current");
     const goalInput      = document.getElementById("goal");
@@ -483,8 +490,7 @@
       goal: "winterGoalGoal"
     };
 
-    // Replace with your real backend URL when ready
-    const API_URL = "https://your-backend.example.com/api/payroll-progress";
+  
 
     function loadFromLocalStorage() {
       try {
@@ -507,35 +513,46 @@
     }
 
     async function loadFromServer() {
-      try {
-        const res = await fetch(API_URL, { method: "GET" });
-        if (!res.ok) throw new Error("Non-2xx response");
-        const data = await res.json();
+  try {
+    // Fetch the single "global" row from Supabase
+    const { data, error } = await supabase
+      .from("payroll_progress")
+      .select("current, goal")
+      .eq("id", "global")
+      .single();
 
-        if (typeof data.current === "number") {
-          currentInput.value = data.current;
-        }
-        if (typeof data.goal === "number") {
-          goalInput.value = data.goal;
-        }
-      } catch (err) {
-        console.warn("Falling back to localStorage (load failed)", err);
-        loadFromLocalStorage();
-      }
+    if (error) throw error;
+
+    if (typeof data.current === "number") {
+      currentInput.value = data.current;
     }
+    if (typeof data.goal === "number") {
+      goalInput.value = data.goal;
+    }
+  } catch (err) {
+    console.warn("Falling back to localStorage (load failed)", err);
+    loadFromLocalStorage();
+  }
+}
+
 
     async function saveToServer(current, goal) {
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ current, goal })
-        });
-      } catch (err) {
-        console.warn("Server save failed, saving to localStorage instead", err);
-        saveToLocalStorage(current, goal);
-      }
-    }
+  try {
+    const { error } = await supabase
+      .from("payroll_progress")
+      .update({
+        current,
+        goal,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", "global");
+
+    if (error) throw error;
+  } catch (err) {
+    console.warn("Server save failed, saving to localStorage instead", err);
+    saveToLocalStorage(current, goal);
+  }
+}
 
     const BASE = 614;  // starting point
 
